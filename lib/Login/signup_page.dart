@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gdsc/Login/login_page.dart';
+import 'package:gdsc/Login/signup_complete_screen.dart';
+import 'package:get/get.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -28,14 +31,7 @@ class _SignUpPageState extends State<SignUpPage> {
     // ...
 
     // 회원가입 완료 후 홈 화면으로 이동
-    _navigateToHomeScreen();
-  }
-
-  void _navigateToHomeScreen() {
-    Navigator.pushReplacement(
-      context,
-      MaterialPageRoute(builder: (context) => SignUpCompleteScreen()), // SignUpCompleteScreen으로 변경
-    );
+    Get.off(() => SignUpCompleteScreen());
   }
 
   @override
@@ -73,33 +69,6 @@ class _SignUpPageState extends State<SignUpPage> {
             ElevatedButton(
               onPressed: _signUp,
               child: Text('회원가입'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class SignUpCompleteScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up Complete'),
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text('회원가입이 완료되었습니다!'),
-            SizedBox(height: 16.0),
-            ElevatedButton(
-              onPressed: () {
-                Navigator.popUntil(context, ModalRoute.withName('/')); // 최상위 화면으로 이동
-              },
-              child: Text('로그인 화면으로 돌아가기'),
             ),
           ],
         ),

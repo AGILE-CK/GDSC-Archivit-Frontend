@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:gdsc/Login/signup_page.dart';
+import 'package:get/get.dart';
+
 import 'login_page.dart'; // 로그인 페이지 파일 임포트
 
 class SignUpCompleteScreen extends StatelessWidget {
@@ -20,10 +23,7 @@ class SignUpCompleteScreen extends StatelessWidget {
             ElevatedButton(
               onPressed: () {
                 // 새로운 SignUpPage를 띄워 이동
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
-                );
+                Get.offAll(() => LoginPage());
               },
               child: Text('로그인 화면으로 돌아가기'),
             ),
