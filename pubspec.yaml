@@ -47,46 +47,34 @@ dev_dependencies:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
-# The following section is specific to Flutter packages.
-flutter:
+# Dart 일반 부분에 대한 정보는 다음 페이지를 참조하세요: https://dart.dev/tools/pub/pubspec
 
-  # The following line ensures that the Material Icons font is
-  # included with your application, so that you can use the icons in
-  # the material Icons class.
+# Flutter 패키지에 대한 섹션입니다.
+flutter:
+  # 다음 라인은 Material Icons 글꼴이
+  # 애플리케이션에 포함되어 있어 material Icons 클래스에서 사용할 수 있도록합니다.
   uses-material-design: true
 
-  # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
-  #   - images/a_dot_ham.jpeg
+    # 애플리케이션에 자산을 추가하려면 다음과 같이 자산 섹션을 추가하십시오.
+    # assets:
+    #   - images/a_dot_burr.jpeg
+    #   - images/a_dot_ham.jpeg
 
-  # An image asset can refer to one or more resolution-specific "variants", see
-  # https://flutter.dev/assets-and-images/#resolution-aware
+    # 이미지 자산은 하나 이상의 해상도별 "variant"를 참조 할 수 있습니다. 자세한 내용은
+    # https://flutter.dev/assets-and-images/#resolution-aware를 참조하십시오.
 
-  # For details regarding adding assets from package dependencies, see
-  # https://flutter.dev/assets-and-images/#from-packages
+    # 패키지 종속성에서 자산 추가에 대한 자세한 내용은
+    # https://flutter.dev/assets-and-images/#from-packages를 참조하십시오.
 
-  # To add custom fonts to your application, add a fonts section here,
-  # in this "flutter" section. Each entry in this list should have a
-  # "family" key with the font family name, and a "fonts" key with a
-  # list giving the asset and other descriptors for the font. For
-  # example:
-   fonts:
-     - family: HGGGothicssi_Pro
-       fonts:
-         - asset: fonts/HGGGothicssi_Pro.ttf
-            weight: 700
-  #       - asset: fonts/Schyler-Italic.ttf
-  #         style: italic
-     - family: Pretendard Pro
-       fonts:
-         - asset: fonts/Pretendard_Bold.ttf
-         - asset: fonts/Pretendard_ExtraBold.ttf
-         - asset: fonts/Pretendard_Light.ttf
-         - asset: fonts/Pretendard_Medium.ttf
-         - asset: fonts/Pretendard_Regular.ttf
-         - asset: fonts/Pretendard_Thin.ttf
-  #         weight: 700
-  #
-  # For details regarding fonts from package dependencies,
-  # see https://flutter.dev/custom-fonts/#from-packages
+    # 애플리케이션에 사용자 정의 글꼴을 추가하려면 여기에 fonts 섹션을 추가하십시오.
+    # 이 목록의 각 항목은 글꼴 패밀리 이름을 가진 "family" 키와
+    # 글꼴에 대한 자산 및 기타 기술자를 가진 "fonts" 키를 가져야합니다. 예를 들면:
+    #fonts:
+    # - family: Pretendard Pro
+    #fonts:
+    #- asset: fonts/Pretendard_Bold.ttf
+    # - asset: fonts/Pretendard_ExtraBold.ttf
+    #- asset: fonts/Pretendard_Light.ttf
+    # - asset: fonts/Pretendard_Medium.ttf
+    # - asset: fonts/Pretendard_Regular.ttf
+  #- asset: fonts/Pretendard_Thin.ttf
