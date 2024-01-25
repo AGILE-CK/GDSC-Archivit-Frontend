@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _HomeScreenState createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  bool isTextSelected = true; // 사용자가 Text를 눌렀는지 여부
 
   @override
   Widget build(BuildContext context) {
@@ -97,9 +104,84 @@ class HomeScreen extends StatelessWidget {
           ),
           SliverToBoxAdapter(
             child: Container(
-              margin: EdgeInsets.only(left: 16.0, right: 16.0, top: 8.0),
-              height: 1.0,
-              color: Colors.grey[300],
+              color: Color(0xFFF2F8F8),
+              padding: EdgeInsets.symmetric(vertical: 10.0),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTextSelected = true;
+                      });
+                    },
+                    child: Container(
+                      width: 120.0,
+                      height: 20.0,
+                      decoration: isTextSelected
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25.0),
+                                bottomLeft: Radius.circular(25.0),
+                              ),
+                            )
+                          : BoxDecoration(
+                              color: Color(0xFF767680),
+                              borderRadius: BorderRadius.only(
+                                topLeft: Radius.circular(25.0),
+                                bottomLeft: Radius.circular(25.0),
+                              ),
+                            ),
+                      child: Center(
+                        child: Text(
+                          'Text',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: isTextSelected ? Colors.black : Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      setState(() {
+                        isTextSelected = false;
+                      });
+                    },
+                    child: Container(
+                      width: 120.0,
+                      height: 20.0,
+                      decoration: !isTextSelected
+                          ? BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(25.0),
+                                bottomRight: Radius.circular(25.0),
+                              ),
+                            )
+                          : BoxDecoration(
+                              color: Color(0xFF767680),
+                              borderRadius: BorderRadius.only(
+                                topRight: Radius.circular(25.0),
+                                bottomRight: Radius.circular(25.0),
+                              ),
+                            ),
+                      child: Center(
+                        child: Text(
+                          'Voice',
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color:
+                                !isTextSelected ? Colors.black : Colors.white,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
           SliverFillRemaining(
@@ -108,21 +190,35 @@ class HomeScreen extends StatelessWidget {
               color: Color(0xFFF2F8F8),
               margin: EdgeInsets.only(bottom: 100.0),
               child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Container(
-                    margin: EdgeInsets.only(left: 16.0, bottom: 20.0),
-                    child: Text(
-                      '아래쪽 갈래 페이지',
-                      style: TextStyle(
-                        fontSize: 24.0,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
+                    margin: EdgeInsets.only(top: 20.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        // TODO: Implement the action when the '+' is pressed
+                      },
+                      child: Container(
+                        width: 40.0,
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                          color: isTextSelected ? Colors.red : Colors.grey[200],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '+',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                   ),
-                  // 아래쪽 갈래 페이지에 대한 추가 SliverToBoxAdapter 또는 다른 Sliver 위젯을 추가하세요.
                 ],
               ),
             ),
