@@ -243,7 +243,7 @@ class _HomeScreenState extends State<HomeScreen> {
               border: Border.all(color: Colors.grey),
             ),
           ),
-          SizedBox(height: 8.0),
+          SizedBox(height: 1.0),
           Text(
             title,
             style: TextStyle(
