@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gdsc/home_screen/shool.dart';
 import 'package:get/get.dart';
 import 'blank_memo.dart';
 
@@ -94,6 +95,9 @@ class HomeScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildRoundedRectangle("Blank memo"),
+                  _buildRoundedRectangle("School"),
+                  _buildRoundedRectangle("Dating"),
+                  _buildRoundedRectangle("Domestic"),
                   // Add other template buttons
                 ],
               ),
@@ -108,75 +112,57 @@ class HomeScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      // Implement your logic here
+                      // 텍스트가 눌렸을 때
                       controller.isTextSelected.value = true;
                     },
-                    child: Container(
-                      width: 120.0,
-                      height: 20.0,
-                      decoration: controller.isTextSelected.value
-                          ? BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                bottomLeft: Radius.circular(25.0),
-                              ),
-                            )
-                          : BoxDecoration(
-                              color: Color(0xFF767680),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                bottomLeft: Radius.circular(25.0),
+                    child: Obx(() => Container(
+                          width: 120.0,
+                          height: 20.0,
+                          decoration: BoxDecoration(
+                            color: controller.isTextSelected.value
+                                ? Colors.white
+                                : Color(0xFF767680),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Text',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: controller.isTextSelected.value
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
-                      child: Center(
-                        child: Text(
-                          'Text',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: controller.isTextSelected.value
-                                ? Colors.black
-                                : Colors.white,
                           ),
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   GestureDetector(
                     onTap: () {
-                      // Implement your logic here
+                      // 보이스가 눌렸을 때
                       controller.isTextSelected.value = false;
                     },
-                    child: Container(
-                      width: 120.0,
-                      height: 20.0,
-                      decoration: !controller.isTextSelected.value
-                          ? BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(25.0),
-                                bottomRight: Radius.circular(25.0),
-                              ),
-                            )
-                          : BoxDecoration(
-                              color: Color(0xFF767680),
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(25.0),
-                                bottomRight: Radius.circular(25.0),
+                    child: Obx(() => Container(
+                          width: 120.0,
+                          height: 20.0,
+                          decoration: BoxDecoration(
+                            color: !controller.isTextSelected.value
+                                ? Colors.white
+                                : Color(0xFF767680),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Voice',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: !controller.isTextSelected.value
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
-                      child: Center(
-                        child: Text(
-                          'Voice',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: !controller.isTextSelected.value
-                                ? Colors.black
-                                : Colors.white,
                           ),
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                 ],
               ),
@@ -197,15 +183,12 @@ class HomeScreen extends StatelessWidget {
                       onTap: () {
                         // TODO: Implement the action when the '+' is pressed
                         // Use Get.to to navigate to BlankMemoPage
-                        Get.to(() => BlankMemoPage());
                       },
                       child: Container(
                         width: 40.0,
                         height: 40.0,
                         decoration: BoxDecoration(
-                          color: controller.isTextSelected.value
-                              ? Colors.red
-                              : Colors.grey[200],
+                          color: Colors.grey[200],
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -233,8 +216,13 @@ class HomeScreen extends StatelessWidget {
   Widget _buildRoundedRectangle(String title) {
     return GestureDetector(
       onTap: () {
-        // 각 상자를 탭하면 BlankMemoPage로 이동
-        Get.to(() => BlankMemoPage());
+        if (title == "Blank memo") {
+          Get.to(() => BlankMemoPage());
+        } else if (title == "School") {
+          Get.to(() => SchoolPage());
+        } else {
+          // TODO: Implement navigation to other pages for different templates
+        }
       },
       child: Container(
         width: 80.0,
