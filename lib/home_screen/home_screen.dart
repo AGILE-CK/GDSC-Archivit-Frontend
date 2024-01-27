@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'blank_memo.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
+class HomeScreenController extends GetxController {
+  final RxBool isTextSelected = true.obs;
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  bool isTextSelected = true; // 사용자가 Text를 눌렀는지 여부
+class HomeScreen extends StatelessWidget {
+  final HomeScreenController controller = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               margin: EdgeInsets.only(left: 16.0, top: 44.0),
               child: Text(
-                'Archivit111',
+                'Archivit',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 40.0,
@@ -95,9 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   _buildRoundedRectangle("Blank memo"),
-                  _buildRoundedRectangle("School"),
-                  _buildRoundedRectangle("Dating"),
-                  _buildRoundedRectangle("Domestic"),
+                  // Add other template buttons
                 ],
               ),
             ),
@@ -111,14 +108,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        isTextSelected = true;
-                      });
+                      // Implement your logic here
+                      controller.isTextSelected.value = true;
                     },
                     child: Container(
                       width: 120.0,
                       height: 20.0,
-                      decoration: isTextSelected
+                      decoration: controller.isTextSelected.value
                           ? BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.only(
@@ -138,7 +134,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Text',
                           style: TextStyle(
                             fontSize: 16.0,
-                            color: isTextSelected ? Colors.black : Colors.white,
+                            color: controller.isTextSelected.value
+                                ? Colors.black
+                                : Colors.white,
                           ),
                         ),
                       ),
@@ -146,14 +144,13 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        isTextSelected = false;
-                      });
+                      // Implement your logic here
+                      controller.isTextSelected.value = false;
                     },
                     child: Container(
                       width: 120.0,
                       height: 20.0,
-                      decoration: !isTextSelected
+                      decoration: !controller.isTextSelected.value
                           ? BoxDecoration(
                               color: Colors.white,
                               borderRadius: BorderRadius.only(
@@ -173,8 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           'Voice',
                           style: TextStyle(
                             fontSize: 16.0,
-                            color:
-                                !isTextSelected ? Colors.black : Colors.white,
+                            color: !controller.isTextSelected.value
+                                ? Colors.black
+                                : Colors.white,
                           ),
                         ),
                       ),
@@ -198,12 +196,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: GestureDetector(
                       onTap: () {
                         // TODO: Implement the action when the '+' is pressed
+                        // Use Get.to to navigate to BlankMemoPage
+                        Get.to(() => BlankMemoPage());
                       },
                       child: Container(
                         width: 40.0,
                         height: 40.0,
                         decoration: BoxDecoration(
-                          color: isTextSelected ? Colors.red : Colors.grey[200],
+                          color: controller.isTextSelected.value
+                              ? Colors.red
+                              : Colors.grey[200],
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -229,29 +231,35 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRoundedRectangle(String title) {
-    return Container(
-      width: 80.0,
-      height: 104.0,
-      child: Column(
-        children: [
-          Container(
-            width: 80.0,
-            height: 80.0,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.grey),
+    return GestureDetector(
+      onTap: () {
+        // 각 상자를 탭하면 BlankMemoPage로 이동
+        Get.to(() => BlankMemoPage());
+      },
+      child: Container(
+        width: 80.0,
+        height: 104.0,
+        child: Column(
+          children: [
+            Container(
+              width: 80.0,
+              height: 80.0,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Colors.grey),
+              ),
             ),
-          ),
-          SizedBox(height: 1.0),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.black,
+            SizedBox(height: 1.0),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
