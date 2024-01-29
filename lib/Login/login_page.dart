@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gdsc/Login/signup_page.dart';
-import 'package:gdsc/home_screen.dart';
+import 'package:gdsc/home_screen/home_screen.dart';
 import 'package:get/get.dart';
 
 void main() {

@@ -1,0 +1,16 @@
+{
+	"folders": [
+		{
+			"path": "../agilefrontend"
+		},
+		{
+			"path": "."
+		},
+		{
+			"path": "../archivit_AI"
+		}
+	],
+	"settings": {
+		"java.configuration.updateBuildConfiguration": "disabled"
+	}
+}

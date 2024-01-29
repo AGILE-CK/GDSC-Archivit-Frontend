@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:gdsc/home_screen/shool.dart';
+import 'package:get/get.dart';
+import 'blank_memo.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
-
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
+class HomeScreenController extends GetxController {
+  final RxBool isTextSelected = true.obs;
 }
 
-class _HomeScreenState extends State<HomeScreen> {
-  bool isTextSelected = true; // 사용자가 Text를 눌렀는지 여부
+class HomeScreen extends StatelessWidget {
+  final HomeScreenController controller = Get.put(HomeScreenController());
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +20,7 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Container(
               margin: EdgeInsets.only(left: 16.0, top: 44.0),
               child: Text(
-                'Archivit111',
+                'Archivit',
                 style: TextStyle(
                   color: Colors.black,
                   fontSize: 40.0,
@@ -98,6 +98,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildRoundedRectangle("School"),
                   _buildRoundedRectangle("Dating"),
                   _buildRoundedRectangle("Domestic"),
+                  // Add other template buttons
                 ],
               ),
             ),
@@ -111,74 +112,57 @@ class _HomeScreenState extends State<HomeScreen> {
                 children: [
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        isTextSelected = true;
-                      });
+                      // 텍스트가 눌렸을 때
+                      controller.isTextSelected.value = true;
                     },
-                    child: Container(
-                      width: 120.0,
-                      height: 20.0,
-                      decoration: isTextSelected
-                          ? BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                bottomLeft: Radius.circular(25.0),
-                              ),
-                            )
-                          : BoxDecoration(
-                              color: Color(0xFF767680),
-                              borderRadius: BorderRadius.only(
-                                topLeft: Radius.circular(25.0),
-                                bottomLeft: Radius.circular(25.0),
+                    child: Obx(() => Container(
+                          width: 120.0,
+                          height: 20.0,
+                          decoration: BoxDecoration(
+                            color: controller.isTextSelected.value
+                                ? Colors.white
+                                : Color(0xFF767680),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Text',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: controller.isTextSelected.value
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
-                      child: Center(
-                        child: Text(
-                          'Text',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color: isTextSelected ? Colors.black : Colors.white,
                           ),
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                   GestureDetector(
                     onTap: () {
-                      setState(() {
-                        isTextSelected = false;
-                      });
+                      // 보이스가 눌렸을 때
+                      controller.isTextSelected.value = false;
                     },
-                    child: Container(
-                      width: 120.0,
-                      height: 20.0,
-                      decoration: !isTextSelected
-                          ? BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(25.0),
-                                bottomRight: Radius.circular(25.0),
-                              ),
-                            )
-                          : BoxDecoration(
-                              color: Color(0xFF767680),
-                              borderRadius: BorderRadius.only(
-                                topRight: Radius.circular(25.0),
-                                bottomRight: Radius.circular(25.0),
+                    child: Obx(() => Container(
+                          width: 120.0,
+                          height: 20.0,
+                          decoration: BoxDecoration(
+                            color: !controller.isTextSelected.value
+                                ? Colors.white
+                                : Color(0xFF767680),
+                            borderRadius: BorderRadius.circular(25.0),
+                          ),
+                          child: Center(
+                            child: Text(
+                              'Voice',
+                              style: TextStyle(
+                                fontSize: 16.0,
+                                color: !controller.isTextSelected.value
+                                    ? Colors.black
+                                    : Colors.white,
                               ),
                             ),
-                      child: Center(
-                        child: Text(
-                          'Voice',
-                          style: TextStyle(
-                            fontSize: 16.0,
-                            color:
-                                !isTextSelected ? Colors.black : Colors.white,
                           ),
-                        ),
-                      ),
-                    ),
+                        )),
                   ),
                 ],
               ),
@@ -198,12 +182,13 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: GestureDetector(
                       onTap: () {
                         // TODO: Implement the action when the '+' is pressed
+                        // Use Get.to to navigate to BlankMemoPage
                       },
                       child: Container(
                         width: 40.0,
                         height: 40.0,
                         decoration: BoxDecoration(
-                          color: isTextSelected ? Colors.red : Colors.grey[200],
+                          color: Colors.grey[200],
                           shape: BoxShape.circle,
                         ),
                         child: Center(
@@ -229,29 +214,40 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _buildRoundedRectangle(String title) {
-    return Container(
-      width: 80.0,
-      height: 104.0,
-      child: Column(
-        children: [
-          Container(
-            width: 80.0,
-            height: 80.0,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(8.0),
-              border: Border.all(color: Colors.grey),
+    return GestureDetector(
+      onTap: () {
+        if (title == "Blank memo") {
+          Get.to(() => BlankMemoPage());
+        } else if (title == "School") {
+          Get.to(() => SchoolPage());
+        } else {
+          // TODO: Implement navigation to other pages for different templates
+        }
+      },
+      child: Container(
+        width: 80.0,
+        height: 104.0,
+        child: Column(
+          children: [
+            Container(
+              width: 80.0,
+              height: 80.0,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(8.0),
+                border: Border.all(color: Colors.grey),
+              ),
             ),
-          ),
-          SizedBox(height: 8.0),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.black,
+            SizedBox(height: 1.0),
+            Text(
+              title,
+              style: TextStyle(
+                fontSize: 12.0,
+                color: Colors.black,
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
