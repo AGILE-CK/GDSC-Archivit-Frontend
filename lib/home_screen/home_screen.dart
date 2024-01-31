@@ -140,6 +140,7 @@ class HomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       // 보이스가 눌렸을 때
+                      // TODO: Implement voice input functionality
                       controller.isTextSelected.value = false;
                     },
                     child: Obx(() => Container(

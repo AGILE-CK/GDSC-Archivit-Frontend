@@ -21,8 +21,6 @@ class _SchoolPageState extends State<SchoolPage> {
   final TextEditingController _feelingsController = TextEditingController();
   final TextEditingController _desiredActionController =
       TextEditingController();
-  // evidence 섹션에서 텍스트를 입력하는 부분 삭제
-  // final TextEditingController _evidenceController = TextEditingController();
 
   bool isIncidentStatementExpanded = false;
   bool isWitnessesExpanded = false;
@@ -177,7 +175,7 @@ class _SchoolPageState extends State<SchoolPage> {
           child: Row(
             children: [
               Icon(
-                Icons.arrow_downward,
+                isExpanded ? Icons.arrow_drop_down : Icons.arrow_right,
                 size: 20.0,
                 color: Color(0xFF007AFF),
               ),
@@ -199,10 +197,10 @@ class _SchoolPageState extends State<SchoolPage> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Additional details or functionality related to $title",
-                  style: TextStyle(fontSize: 14.0),
-                ),
+                //Text(
+                //"Additional details or functionality related to $title",
+                //style: TextStyle(fontSize: 14.0),
+                //),
                 SizedBox(height: 8.0),
                 if (textEditingController != null)
                   TextField(
@@ -214,7 +212,7 @@ class _SchoolPageState extends State<SchoolPage> {
                     ),
                   ),
                 if (textEditingController != null) SizedBox(height: 8.0),
-                if (additionalText.isNotEmpty) // 추가: 조건을 추가하여 표시 여부 결정
+                if (additionalText.isNotEmpty)
                   Text(
                     additionalText,
                     style: TextStyle(fontSize: 14.0),
@@ -242,7 +240,7 @@ class _SchoolPageState extends State<SchoolPage> {
           child: Row(
             children: [
               Icon(
-                Icons.arrow_downward,
+                isExpanded ? Icons.arrow_drop_down : Icons.arrow_right,
                 size: 20.0,
                 color: Color(0xFF007AFF),
               ),
@@ -297,7 +295,7 @@ class _SchoolPageState extends State<SchoolPage> {
           child: Row(
             children: [
               Icon(
-                Icons.arrow_downward,
+                isExpanded ? Icons.arrow_drop_down : Icons.arrow_right,
                 size: 20.0,
                 color: Color(0xFF007AFF),
               ),
