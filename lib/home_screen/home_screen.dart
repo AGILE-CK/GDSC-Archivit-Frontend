@@ -1,10 +1,51 @@
 import 'package:flutter/material.dart';
-import 'package:gdsc/home_screen/shool.dart';
 import 'package:get/get.dart';
 import 'blank_memo.dart';
+import 'package:gdsc/home_screen/shool.dart';
 
 class HomeScreenController extends GetxController {
   final RxBool isTextSelected = true.obs;
+}
+
+class TextScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color(0xFFF2F8F8),
+      margin: EdgeInsets.only(bottom: 100.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // Text Screen Content
+        ],
+      ),
+    );
+  }
+}
+
+class VoiceScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      color: Color(0xFFF2F8F8),
+      margin: EdgeInsets.only(bottom: 100.0),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.start, // 변경: 상단 정렬
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          SizedBox(height: 5.0),
+          Text(
+            'If you want to start recording, speak "Start Recording"',
+            style: TextStyle(
+              fontSize: 12.0,
+              color: Colors.black,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class HomeScreen extends StatelessWidget {
@@ -171,43 +212,11 @@ class HomeScreen extends StatelessWidget {
           ),
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Container(
-              color: Color(0xFFF2F8F8),
-              margin: EdgeInsets.only(bottom: 100.0),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Container(
-                    margin: EdgeInsets.only(top: 20.0),
-                    child: GestureDetector(
-                      onTap: () {
-                        // TODO: Implement the action when the '+' is pressed
-                        // Use Get.to to navigate to BlankMemoPage
-                      },
-                      child: Container(
-                        width: 40.0,
-                        height: 40.0,
-                        decoration: BoxDecoration(
-                          color: Colors.grey[200],
-                          shape: BoxShape.circle,
-                        ),
-                        child: Center(
-                          child: Text(
-                            '+',
-                            style: TextStyle(
-                              fontSize: 24.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.black,
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            child: Obx(() {
+              return controller.isTextSelected.value
+                  ? TextScreen()
+                  : VoiceScreen();
+            }),
           ),
         ],
       ),
