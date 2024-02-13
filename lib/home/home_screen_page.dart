@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:gdsc/home_screen/shool.dart';
+import 'package:gdsc/home/school_page.dart';
 import 'package:get/get.dart';
-import 'blank_memo.dart';
+import 'blank_memo_page.dart';
 
 class HomeScreenController extends GetxController {
   final RxBool isTextSelected = true.obs;
