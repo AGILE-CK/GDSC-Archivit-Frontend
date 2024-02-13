@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:gdsc/Login/login_page.dart';
-import 'package:gdsc/Login/signup_complete_screen.dart';
+import 'package:gdsc/auth/login_page.dart';
+import 'package:gdsc/auth/signup_complete_screen.dart';
 import 'package:get/get.dart';
 
 class SignUpPage extends StatefulWidget {

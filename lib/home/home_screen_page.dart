@@ -1,72 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:gdsc/home/school_page.dart';
 import 'package:get/get.dart';
-import 'blank_memo.dart';
-import 'package:gdsc/home_screen/shool.dart';
-import 'recording.dart'; // 수정: recording.dart 파일 추가
+import 'blank_memo_page.dart';
 
 class HomeScreenController extends GetxController {
   final RxBool isTextSelected = true.obs;
-  get fileList => <String>[].obs;
-}
-
-class TextScreen extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xFFF2F8F8),
-      margin: EdgeInsets.only(bottom: 100.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          // Text Screen Content
-        ],
-      ),
-    );
-  }
-}
-
-class VoiceScreen extends StatelessWidget {
-  final HomeScreenController controller = Get.find();
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      color: Color(0xFFF2F8F8),
-      margin: EdgeInsets.only(bottom: 30.0),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          SizedBox(height: 5.0),
-          Text(
-            'If you want to start recording, speak "Start Recording"',
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Colors.black,
-            ),
-          ),
-          SizedBox(height: 1.0),
-          Obx(() {
-            return Expanded(
-              child: controller.fileList.isEmpty
-                  ? Center(
-                      child: Text('No recordings available'),
-                    )
-                  : ListView.builder(
-                      itemCount: controller.fileList.length,
-                      itemBuilder: (context, index) {
-                        return ListTile(
-                          title: Text(controller.fileList[index]),
-                        );
-                      },
-                    ),
-            );
-          }),
-        ],
-      ),
-    );
-  }
 }
 
 class HomeScreen extends StatelessWidget {
@@ -202,7 +140,6 @@ class HomeScreen extends StatelessWidget {
                   GestureDetector(
                     onTap: () {
                       // 보이스가 눌렸을 때
-                      // TODO: Implement voice input functionality
                       controller.isTextSelected.value = false;
                     },
                     child: Obx(() => Container(
@@ -233,11 +170,43 @@ class HomeScreen extends StatelessWidget {
           ),
           SliverFillRemaining(
             hasScrollBody: false,
-            child: Obx(() {
-              return controller.isTextSelected.value
-                  ? TextScreen()
-                  : VoiceScreen();
-            }),
+            child: Container(
+              color: Color(0xFFF2F8F8),
+              margin: EdgeInsets.only(bottom: 100.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Container(
+                    margin: EdgeInsets.only(top: 20.0),
+                    child: GestureDetector(
+                      onTap: () {
+                        // TODO: Implement the action when the '+' is pressed
+                        // Use Get.to to navigate to BlankMemoPage
+                      },
+                      child: Container(
+                        width: 40.0,
+                        height: 40.0,
+                        decoration: BoxDecoration(
+                          color: Colors.grey[200],
+                          shape: BoxShape.circle,
+                        ),
+                        child: Center(
+                          child: Text(
+                            '+',
+                            style: TextStyle(
+                              fontSize: 24.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.black,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
         ],
       ),
@@ -251,9 +220,6 @@ class HomeScreen extends StatelessWidget {
           Get.to(() => BlankMemoPage());
         } else if (title == "School") {
           Get.to(() => SchoolPage());
-        } else if (title == "Dating") {
-          // Dating 버튼일 경우 RecordingScreen으로 이동
-          Get.to(() => RecordingScreen());
         } else {
           // TODO: Implement navigation to other pages for different templates
         }
