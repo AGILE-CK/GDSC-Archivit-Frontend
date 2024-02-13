@@ -2,9 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'blank_memo.dart';
 import 'package:gdsc/home_screen/shool.dart';
+import 'recording.dart'; // 수정: recording.dart 파일 추가
 
 class HomeScreenController extends GetxController {
   final RxBool isTextSelected = true.obs;
+  get fileList => <String>[].obs;
 }
 
 class TextScreen extends StatelessWidget {
@@ -25,13 +27,15 @@ class TextScreen extends StatelessWidget {
 }
 
 class VoiceScreen extends StatelessWidget {
+  final HomeScreenController controller = Get.find();
+
   @override
   Widget build(BuildContext context) {
     return Container(
       color: Color(0xFFF2F8F8),
-      margin: EdgeInsets.only(bottom: 100.0),
+      margin: EdgeInsets.only(bottom: 30.0),
       child: Column(
-        mainAxisAlignment: MainAxisAlignment.start, // 변경: 상단 정렬
+        mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           SizedBox(height: 5.0),
@@ -42,6 +46,23 @@ class VoiceScreen extends StatelessWidget {
               color: Colors.black,
             ),
           ),
+          SizedBox(height: 1.0),
+          Obx(() {
+            return Expanded(
+              child: controller.fileList.isEmpty
+                  ? Center(
+                      child: Text('No recordings available'),
+                    )
+                  : ListView.builder(
+                      itemCount: controller.fileList.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(controller.fileList[index]),
+                        );
+                      },
+                    ),
+            );
+          }),
         ],
       ),
     );
@@ -230,6 +251,9 @@ class HomeScreen extends StatelessWidget {
           Get.to(() => BlankMemoPage());
         } else if (title == "School") {
           Get.to(() => SchoolPage());
+        } else if (title == "Dating") {
+          // Dating 버튼일 경우 RecordingScreen으로 이동
+          Get.to(() => RecordingScreen());
         } else {
           // TODO: Implement navigation to other pages for different templates
         }
