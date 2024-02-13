@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:gdsc/Login/signup_page.dart';
+import 'package:gdsc/auth/signup_page.dart';
 import 'package:get/get.dart';
 
 import 'login_page.dart'; // 로그인 페이지 파일 임포트
