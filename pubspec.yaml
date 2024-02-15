@@ -44,6 +44,9 @@ dependencies:
   dart_jsonwebtoken: ^2.11.0
   flutter_native_splash: ^2.3.2
   intl: 
+  path_provider: ^2.1.2
+  flutter_speed_dial: ^7.0.0
+  fluentui_system_icons: ^1.1.226
 
 
 dev_dependencies:
@@ -64,6 +67,7 @@ flutter:
   uses-material-design: true
   assets:
     - assets/icon/
+    - assets/icon/floating/
 
     # 애플리케이션에 자산을 추가하려면 다음과 같이 자산 섹션을 추가하십시오.
     # assets:
