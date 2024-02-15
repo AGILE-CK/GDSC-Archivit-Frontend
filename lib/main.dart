@@ -13,7 +13,7 @@ void main() {
         // add providers here
         ChangeNotifierProvider(create: (context) => (BottomBarProvider())),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -36,8 +36,9 @@ class MyApp extends StatelessWidget {
         home: FutureBuilder(
           future: () async {
             // check if user is already logged in
-            // if logged in, return user info
+            // if logged in, return user info jwt token
             // if not logged in, return ""
+
             return "";
           }(),
           builder: (context, snapshot) {
