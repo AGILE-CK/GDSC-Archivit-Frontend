@@ -12,7 +12,7 @@ class BottomBarRoutingPage extends StatefulWidget {
 class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
   List<Widget> navBarPages = [
     HomeScreen(),
-    // HomeScreen(),
+    HomeScreen(),
     // HomeScreen(),
     // HomeScreen(),
   ];
@@ -46,12 +46,12 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
                 image: AssetImage('assets/icon/home.jpg')), // active icon color
             label: 'Home',
           ),
-          BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/icon/idea.jpg')),
-            activeIcon: Image(
-                image: AssetImage('assets/icon/idea.jpg')), // active icon color
-            label: 'Idea',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Image(image: AssetImage('assets/icon/idea.jpg')),
+          //   activeIcon: Image(
+          //       image: AssetImage('assets/icon/idea.jpg')), // active icon color
+          //   label: 'Idea',
+          // ),
           BottomNavigationBarItem(
             icon: Image(image: AssetImage('assets/icon/setting.jpg')),
             activeIcon: Image(
@@ -59,13 +59,13 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
                     AssetImage('assets/icon/setting.jpg')), // active icon color
             label: 'Setting',
           ),
-          BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/icon/profile.jpg')),
-            activeIcon: Image(
-                image:
-                    AssetImage('assets/icon/profile.jpg')), // active icon color
-            label: 'Profile',
-          ),
+          // BottomNavigationBarItem(
+          //   icon: Image(image: AssetImage('assets/icon/profile.jpg')),
+          //   activeIcon: Image(
+          //       image:
+          //           AssetImage('assets/icon/profile.jpg')), // active icon color
+          //   label: 'Profile',
+          // ),
         ],
         currentIndex: selectedIndex,
         unselectedItemColor: Colors.black,
