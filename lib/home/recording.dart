@@ -1,6 +1,13 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'dart:async'; // 이 줄을 추가해주세요.
 import 'package:flutter/material.dart';
 import 'password.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:http/http.dart' as http;
+import 'dart:io';
+import 'package:path_provider/path_provider.dart';
+import 'dart:convert'; // Import JSON codec
 
 class RecordingScreen extends StatefulWidget {
   @override
@@ -10,7 +17,78 @@ class RecordingScreen extends StatefulWidget {
 class _RecordingScreenState extends State<RecordingScreen> {
   bool isPlaying = false;
   int timerValue = 0;
+  bool isRecording = false; // a variable to track recording state
   late Timer _timer; // Timer 변수를 선언합니다.
+  final FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  bool _isRecorderInitialized = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRecorder();
+  }
+
+  Future<void> _initRecorder() async {
+    await _recorder.openAudioSession();
+    _isRecorderInitialized = true;
+  }
+
+  void _startRecordingLoop() async {
+    if (!_isRecorderInitialized) return;
+    const int recordingDuration = 5; // Record 5 seconds chunks
+    while (isRecording) { // isRecording should be a global state to control recording loop
+      final tempDir = await getTemporaryDirectory();
+      final filePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
+      
+      await _recorder.startRecorder(
+        toFile: filePath,
+        codec: Codec.aacADTS,
+      );
+      await Future.delayed(Duration(seconds: recordingDuration));
+      await _recorder.stopRecorder();
+
+      _sendFileToBackend(filePath);
+    }
+  }
+
+void _sendFileToBackend(String filePath) async {
+  var request = http.MultipartRequest(
+    'POST', Uri.parse('http://104.154.58.103:8080/violent-speech-detection/')
+  )..files.add(await http.MultipartFile.fromPath('file', filePath));
+  
+  var response = await request.send();
+  
+  if (response.statusCode == 200) {
+    // Parse the response
+    String responseBody = await response.stream.bytesToString();
+    Map<String, dynamic> parsedResponse = jsonDecode(responseBody);
+
+    if (parsedResponse["violence_status"] == "Violent Situation Detected") {
+      // Start audio recording to save evidence
+      setState(() {
+        isRecording = false; // Stop the loop
+        // Add the trigger recording
+        if (!isPlaying) {
+          togglePlay();
+        }
+      });
+    }
+    // If "Non-Violent Situation", just continue with the loop in _startRecordingLoop()
+  } else {
+    // Handle error or invalid response
+    print("Error: Server returned an error status code.");
+  }
+  
+  // Delete the temporary file
+  File(filePath).delete();
+}
+
+  @override
+  void dispose() {
+    _recorder.closeAudioSession();
+    super.dispose();
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -134,26 +212,75 @@ class _RecordingScreenState extends State<RecordingScreen> {
                   ),
                 ),
                 SizedBox(height: 16.0),
-                SizedBox(
-                  width: 60.0, // 아이콘의 너비 지정
-                  height: 100.0, // 아이콘의 높이 지정
-                  child: IconButton(
-                    icon: Icon(
-                      isPlaying ? Icons.stop : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 50.0, // 아이콘 크기 조정
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          isRecording = !isRecording;
+                          if (isRecording) {
+                            // Start the recording loop
+                            _startRecordingLoop();
+                          } else {
+                            // Stop recording if currently in progress
+                            _recorder.stopRecorder();
+                          }
+                        });
+                      },
+                      child: AnimatedContainer(
+                        duration: Duration(milliseconds: 300),
+                        curve: Curves.easeInOut,
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8.0, 
+                          horizontal: isRecording ? 32.0 : 16.0, // Increase horizontal padding
+                        ),
+                        decoration: BoxDecoration(
+                          color: isRecording ? Colors.deepPurple : Colors.purpleAccent, // Change color when recording
+                          borderRadius: BorderRadius.circular(20.0),
+                          boxShadow: [
+                            BoxShadow(
+                              color: isRecording ? Colors.deepPurple[700]!.withOpacity(0.6) : Colors.purpleAccent.withOpacity(0.3),
+                              spreadRadius: isRecording ? 4 : 1,
+                              blurRadius: isRecording ? 10 : 2,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min, // to wrap content in the row
+                          children: [
+                            Icon(
+                              Icons.mic, // Microphone icon
+                              color: Colors.white,
+                              size: 24.0,
+                            ),
+                            SizedBox(width: 4.0),
+                            Text(
+                              'Auto Record',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        isPlaying = !isPlaying;
-                        if (isPlaying) {
-                          _startTimer();
-                        } else {
-                          _stopTimer();
-                        }
-                      });
-                    },
-                  ),
+
+                    SizedBox(width: 20), // Space between buttons
+                    IconButton(
+                      icon: Icon(
+                        isPlaying ? Icons.stop : Icons.play_arrow,
+                        color: Colors.white,
+                        size: 50.0,
+                      ),
+                      onPressed: () {
+                        togglePlay();
+                      },
+                    ),
+                  ],
                 ),
               ],
             ),
@@ -187,6 +314,17 @@ class _RecordingScreenState extends State<RecordingScreen> {
     _timer.cancel();
     setState(() {
       timerValue = 0;
+    });
+  }
+
+  void togglePlay() {
+    setState(() {
+      isPlaying = !isPlaying;
+      if (isPlaying) {
+        _startTimer();
+      } else {
+        _stopTimer();
+      }
     });
   }
 
