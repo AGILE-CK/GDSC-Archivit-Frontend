@@ -3,6 +3,9 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
+import 'package:gdsc/provider/make_recording_page_provider.dart';
+import 'package:gdsc/provider/make_text_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -12,8 +15,13 @@ void main() {
       providers: [
         // add providers here
         ChangeNotifierProvider(create: (context) => (BottomBarProvider())),
+        ChangeNotifierProvider(create: (context) => (FolderPageProvider())),
+        ChangeNotifierProvider(
+            create: (context) => (MakeRecordingPageProvider())),
+        ChangeNotifierProvider(
+            create: (context) => (MakeTextFilePageProvider())),
       ],
-      child: MyApp(),
+      child: const MyApp(),
     ),
   );
 }
@@ -36,8 +44,11 @@ class MyApp extends StatelessWidget {
         home: FutureBuilder(
           future: () async {
             // check if user is already logged in
-            // if logged in, return user info
+            // if logged in, return user info jwt token
             // if not logged in, return ""
+            var folderPageProvider = context.read<FolderPageProvider>();
+            folderPageProvider.listFilesAndTexts();
+
             return "";
           }(),
           builder: (context, snapshot) {
