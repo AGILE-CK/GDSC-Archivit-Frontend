@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/home/in_folder_page.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/routing/bottom_bar_routing_page.dart';
 import 'package:gdsc/service/get_today.dart';
@@ -60,11 +61,16 @@ class _HomeScreenState extends State<HomeScreen> {
           Get.snackbar('Error', 'Name cannot be empty');
         } else {
           // Rename the file
-          file.renameSync(controller.text.trim());
+          final newPath =
+              '${file.path.split('/').sublist(0, file.path.split('/').length - 1).join('/')}/${controller.text.trim()}';
+
+          file.renameSync(newPath);
           Get.back(); // Close the dialog
+
           Provider.of<FolderPageProvider>(context, listen: false)
               .listFilesAndTexts();
           setState(() {}); // Redraw the screen
+          Get.back(); // Close the dialog
         }
       },
     );
@@ -81,57 +87,16 @@ class _HomeScreenState extends State<HomeScreen> {
           return Column(
             children: [
               Container(
+                padding: const EdgeInsets.only(top: 44.0),
                 margin: const EdgeInsets.only(left: 16.0, top: 44.0),
                 child: const Text(
                   'Archivit',
                   style: TextStyle(
                     color: Colors.black,
-                    fontSize: 40.0,
+                    fontSize: 50.0,
                     fontWeight: FontWeight.w900,
                     height: 1.2,
                     letterSpacing: 1.0,
-                  ),
-                ),
-              ),
-              Container(
-                margin:
-                    const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                decoration: BoxDecoration(
-                  color: Colors.grey[200],
-                  borderRadius: BorderRadius.circular(8.0),
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.fromLTRB(8.0, 4.0, 8.0, 4.0),
-                  child: Row(
-                    children: [
-                      const Icon(
-                        Icons.search,
-                        color: Color(0xFF3C3C43),
-                        size: 20.0,
-                      ),
-                      SizedBox(width: 4.0),
-                      const Expanded(
-                        child: TextField(
-                          style: TextStyle(fontSize: 16.0),
-                          decoration: InputDecoration(
-                            contentPadding: EdgeInsets.all(0),
-                            isDense: true,
-                            hintText: 'Search',
-                            border: InputBorder.none,
-                          ),
-                        ),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          // TODO: Implement voice input functionality
-                        },
-                        child: const Icon(
-                          Icons.mic,
-                          color: Color(0xFF3C3C43),
-                          size: 20.0,
-                        ),
-                      ),
-                    ],
                   ),
                 ),
               ),
@@ -193,6 +158,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     return GestureDetector(
                       onLongPress: () {
                         showEditDialog(file);
+                      },
+                      onTap: () {
+                        // Open the file
+                        Provider.of<FolderPageProvider>(context, listen: false)
+                            .setSelectedFile(file);
+                        Get.to(() => InFolderPage());
                       },
                       child: Column(
                         children: [

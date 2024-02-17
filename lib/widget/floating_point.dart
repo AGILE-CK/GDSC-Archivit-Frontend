@@ -47,7 +47,7 @@ SpeedDial floatingInHomePage(context) {
   return SpeedDial(
     /// 플로팅 버튼의 기본 상태를 설정합니다.
     icon: Icons.add,
-    animatedIconTheme: const IconThemeData(size: 22.0),
+    // animatedIconTheme: const IconThemeData(size: 22.0),
     backgroundColor: firstBlue,
     foregroundColor: Colors.white,
     shape: const CircleBorder(),
@@ -198,5 +198,23 @@ Future<void> showNameDialog(String template, Widget page, context) async {
         Get.to(page); // Go to the template page
       }
     },
+  );
+}
+
+SpeedDial floatingInInFolderPage(context) {
+  return SpeedDial(
+    icon: Icons.add,
+    backgroundColor: firstBlue,
+    foregroundColor: Colors.white,
+    shape: const CircleBorder(),
+    children: [
+      buildSpeedDialChild('Voice Memo', FluentIcons.person_voice_16_regular,
+          () {
+        makeRecordDialog(context);
+      }),
+      buildSpeedDialChild('Text Memo', FluentIcons.document_16_regular, () {
+        showTemplateDialog(context);
+      }),
+    ],
   );
 }
