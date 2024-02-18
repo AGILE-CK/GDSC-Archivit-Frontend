@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
+import 'package:gdsc/home/voice_setting.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/make_recording_page_provider.dart';
@@ -9,6 +10,7 @@ import 'package:gdsc/provider/make_text_file_page_provider.dart';
 import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:gdsc/home/voice_text.dart';
 
 void main() {
   runApp(
@@ -77,6 +79,6 @@ Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
     return HomeScreen();
   } else {
     // loading
-    return LoginPage();
+    return VoiceTextScreen();
   }
 }
