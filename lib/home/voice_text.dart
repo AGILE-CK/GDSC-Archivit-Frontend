@@ -272,9 +272,3 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
     );
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: VoiceTextScreen(),
-  ));
-}

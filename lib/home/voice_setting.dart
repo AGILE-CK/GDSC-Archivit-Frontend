@@ -233,9 +233,3 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
     });
   }
 }
-
-void main() {
-  runApp(MaterialApp(
-    home: VoiceSettingScreen(),
-  ));
-}
