@@ -1,13 +1,17 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/home/in_folder_page.dart';
+import 'package:gdsc/home/voice_text.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/routing/bottom_bar_routing_page.dart';
+import 'package:gdsc/service/backend_api.dart';
 import 'package:gdsc/service/get_today.dart';
 import 'package:gdsc/widget/floating_point.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -76,8 +80,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> test() async {
+    var response = await ping();
+    if (response.statusCode == 200) {
+      print('Response body: ${response.body}');
+    } else {
+      print('Failed to ping: ${response.body}');
+      Get.offAll(LoginPage());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    test();
     return Scaffold(
       floatingActionButton: floatingInHomePage(context),
       backgroundColor: Colors.white,
@@ -155,47 +170,135 @@ class _HomeScreenState extends State<HomeScreen> {
                   spacing: 17,
                   runSpacing: 19.0,
                   children: files.map((file) {
-                    return GestureDetector(
-                      onLongPress: () {
-                        showEditDialog(file);
-                      },
-                      onTap: () {
-                        // Open the file
-                        Provider.of<FolderPageProvider>(context, listen: false)
-                            .setSelectedFile(file);
-                        Get.to(() => InFolderPage());
-                      },
-                      child: Column(
-                        children: [
-                          const SizedBox(
-                            height: 92,
-                            width: 108,
-                            child: Image(
-                              image: AssetImage('assets/icon/folder.jpg'),
+                    String ext = path.extension(file.path).toLowerCase();
+
+                    if (ext == 'm4a') {
+                      return GestureDetector(
+                        onLongPress: () {
+                          showEditDialog(file);
+                        },
+                        onTap: () {
+                          // Open the file todo
+                          Get.to(() => VoiceTextScreen());
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 92,
+                              width: 108,
+                              child: Icon(
+                                Icons.audiotrack,
+                                size: 50,
+                                color: Colors.blue,
+                              ),
                             ),
-                          ),
-                          Text(
-                            file.path.split('/').last,
-                            style: const TextStyle(
-                              fontSize: 15.0,
-                              color: Colors.black,
+                            Text(
+                              file.path.split('/').last,
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
                             ),
-                          ),
-                          Text(
-                            file
-                                .statSync()
-                                .modified
-                                .toLocal()
-                                .toString()
-                                .split('.')[0],
-                            style: const TextStyle(
-                              fontSize: 9.0,
-                              color: Colors.grey,
+                            Text(
+                              file
+                                  .statSync()
+                                  .modified
+                                  .toLocal()
+                                  .toString()
+                                  .split('.')[0],
+                              style: const TextStyle(
+                                fontSize: 9.0,
+                                color: Colors.grey,
+                              ),
                             ),
-                          ),
-                        ],
-                      ),
-                    );
+                          ],
+                        ),
+                      );
+                    } else if (ext == 'json') {
+                      return GestureDetector(
+                        onLongPress: () {
+                          showEditDialog(file);
+                        },
+                        onTap: () {
+                          // Open the file todo
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 92,
+                              width: 108,
+                              child: Icon(
+                                Icons.article,
+                                size: 50,
+                                color: Colors.blue,
+                              ),
+                            ),
+                            Text(
+                              file.path.split('/').last,
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              file
+                                  .statSync()
+                                  .modified
+                                  .toLocal()
+                                  .toString()
+                                  .split('.')[0],
+                              style: const TextStyle(
+                                fontSize: 9.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    } else {
+                      return GestureDetector(
+                        onLongPress: () {
+                          showEditDialog(file);
+                        },
+                        onTap: () {
+                          // Open the file
+                          Provider.of<FolderPageProvider>(context,
+                                  listen: false)
+                              .setSelectedFile(file);
+                          Get.to(() => InFolderPage());
+                        },
+                        child: Column(
+                          children: [
+                            const SizedBox(
+                              height: 92,
+                              width: 108,
+                              child: Image(
+                                image: AssetImage('assets/icon/folder.jpg'),
+                              ),
+                            ),
+                            Text(
+                              file.path.split('/').last,
+                              style: const TextStyle(
+                                fontSize: 15.0,
+                                color: Colors.black,
+                              ),
+                            ),
+                            Text(
+                              file
+                                  .statSync()
+                                  .modified
+                                  .toLocal()
+                                  .toString()
+                                  .split('.')[0],
+                              style: const TextStyle(
+                                fontSize: 9.0,
+                                color: Colors.grey,
+                              ),
+                            ),
+                          ],
+                        ),
+                      );
+                    }
                   }).toList(),
                 ),
               )
