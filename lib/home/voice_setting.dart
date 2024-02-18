@@ -22,15 +22,33 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
               children: [
                 Container(
                   margin: EdgeInsets.only(left: 16.0, top: 44.0, right: 16.0),
-                  child: Text(
-                    'Archivit',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 40.0,
-                      fontWeight: FontWeight.w900,
-                      height: 1.2,
-                      letterSpacing: 1.0,
-                    ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Archivit',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 40.0,
+                          fontWeight: FontWeight.w900,
+                          height: 1.2,
+                          letterSpacing: 1.0,
+                        ),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          // Add function here for saving settings
+                        },
+                        child: Text(
+                          'Save',
+                          style: TextStyle(
+                            color: Colors.blue,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 20.0),
@@ -157,8 +175,8 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
       height: 60,
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.black, // 배경색을 검정색으로 설정
-        border: Border.all(color: Colors.white), // 테두리를 흰색 실선으로 설정
+        color: Colors.black,
+        border: Border.all(color: Colors.white),
       ),
       child: Center(
         child: Text(

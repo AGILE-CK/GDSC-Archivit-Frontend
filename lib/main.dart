@@ -75,10 +75,10 @@ Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
       return HomeScreen();
     } else {
       // not logged in (token does not exist)
-      return VoiceSettingScreen();
+      return VoiceTextScreen();
     }
   } else {
     // loading
-    return VoiceSettingScreen();
+    return VoiceTextScreen();
   }
 }

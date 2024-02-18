@@ -2,6 +2,13 @@ import 'package:flutter/material.dart';
 
 enum PlaybackSpeed { normal, doubleSpeed, tripleSpeed }
 
+class Conversation {
+  final String speaker;
+  final String message;
+
+  Conversation(this.speaker, this.message);
+}
+
 class VoiceTextScreen extends StatefulWidget {
   @override
   _VoiceTextScreenState createState() => _VoiceTextScreenState();
@@ -11,16 +18,19 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
   bool isPlaying = false;
   PlaybackSpeed playbackSpeed = PlaybackSpeed.normal;
 
-  // 대상들의 대화를 나타내는 리스트
-  List<String> conversation = [
-    "A: Hi there!",
-    "B: Hello!",
-    "A: How are you?",
-    "C: I'm good, thanks for asking.",
-    "A: That's great to hear!",
-    "B: Yeah, how about you?",
-    "C: I'm doing well too.",
-    "A: That's good."
+  // 대화를 나타내는 Conversation 객체의 리스트
+  List<Conversation> conversation = [
+    Conversation("A", "Hi there!"),
+    Conversation("B", "Hello!"),
+    Conversation("A", "How are you?"),
+    Conversation("C", "I'm good, thanks for asking."),
+    Conversation("A", "That's great to hear!"),
+    Conversation("B", "Yeah, how about you?"),
+    Conversation("C", "I'm doing well too."),
+    Conversation("A", "That's good."),
+    Conversation("B", "What are you doing this weekend?"),
+    Conversation("C", "I'm planning to go hiking with some friends."),
+    Conversation("A", "Sounds like fun!"),
   ];
 
   @override
@@ -51,7 +61,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                       ),
                     ],
                   ),
-                  SizedBox(height: 20.0),
+                  SizedBox(height: 5.0),
                   Text(
                     'May 13, 2021',
                     style: TextStyle(
@@ -61,13 +71,32 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                     ),
                   ),
                   SizedBox(height: 1.0),
-                  Text(
-                    'ClassRoom',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 26.0,
-                      fontWeight: FontWeight.w900,
-                    ),
+                  Row(
+                    mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween, // 링크와 공유 아이콘을 오른쪽으로 정렬
+                    children: [
+                      Text(
+                        'ClassRoom',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 26.0,
+                          fontWeight: FontWeight.w900,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.link,
+                            color: Colors.black,
+                          ),
+                          SizedBox(width: 16),
+                          Icon(
+                            Icons.share,
+                            color: Colors.black,
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
                   SizedBox(height: 20.0),
                   Text(
@@ -91,7 +120,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10.0), // 텍스트와 대화 텍스트 사이 간격 조절
+            SizedBox(height: 10.0),
             Container(
               margin: EdgeInsets.symmetric(horizontal: 16.0),
               padding: EdgeInsets.all(10.0),
@@ -103,14 +132,14 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    'AI',
+                    '🤖',
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 10.0,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
-                  SizedBox(height: 5.0), // 텍스트 위아래 여백 추가
+                  SizedBox(height: 5.0),
                   Text(
                     'This is a long AI summary text. It will dynamically adjust the size of the box based on the length of the text. This ensures that the box expands vertically as the text gets longer.',
                     style: TextStyle(
@@ -121,109 +150,131 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 10.0), // 대화 텍스트와 BottomBar 사이 간격 조절
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: conversation.map((text) {
-                  return Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 4.0),
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Container(
-                          width: 10.0, // 동그라미 크기 조절
-                          height: 10.0, // 동그라미 크기 조절
-                          margin: EdgeInsets.only(
-                              top: 6.0, right: 8.0), // 동그라미 위치 조절
-                          decoration: BoxDecoration(
-                            color: text.startsWith("A")
-                                ? Colors.red
-                                : text.startsWith("B")
-                                    ? Colors.blue
-                                    : Colors.green, // A, B, C에 따라 다른 색상 적용
-                            shape: BoxShape.circle,
-                          ),
-                        ),
-                        Expanded(
-                          child: Text(
-                            text,
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 18.0,
+            SizedBox(height: 10.0),
+            SingleChildScrollView(
+              child: Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: conversation.map((conv) {
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 4.0),
+                      child: Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 20.0,
+                            height: 20.0,
+                            margin: EdgeInsets.only(top: 6.0, right: 8.0),
+                            decoration: BoxDecoration(
+                              color: conv.speaker == "A"
+                                  ? Colors.red
+                                  : conv.speaker == "B"
+                                      ? Colors.blue
+                                      : Colors.green,
+                              shape: BoxShape.circle,
                             ),
                           ),
-                        ),
-                      ],
-                    ),
-                  );
-                }).toList(),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                conv.speaker,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(height: 4.0),
+                              Text(
+                                conv.message,
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontSize: 18.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                    );
+                  }).toList(),
+                ),
               ),
             ),
           ],
         ),
       ),
       bottomNavigationBar: BottomAppBar(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            IconButton(
-              icon: Text(playbackSpeed == PlaybackSpeed.normal
-                  ? '1x'
-                  : playbackSpeed == PlaybackSpeed.doubleSpeed
-                      ? '2x'
-                      : '3x'),
-              onPressed: () {
-                setState(() {
-                  if (playbackSpeed == PlaybackSpeed.normal) {
-                    playbackSpeed = PlaybackSpeed.doubleSpeed;
-                  } else if (playbackSpeed == PlaybackSpeed.doubleSpeed) {
-                    playbackSpeed = PlaybackSpeed.tripleSpeed;
-                  } else {
-                    playbackSpeed = PlaybackSpeed.normal;
-                  }
-                });
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.fast_rewind),
-              onPressed: () {
-                // 10초 이전으로 감기 버튼 눌렀을 때 동작
-              },
-            ),
-            isPlaying
-                ? IconButton(
-                    icon: Icon(Icons.stop),
-                    onPressed: () {
-                      setState(() {
-                        isPlaying = false;
-                      });
-                    },
-                  )
-                : IconButton(
-                    icon: Icon(Icons.pause),
-                    onPressed: () {
-                      setState(() {
-                        isPlaying = true;
-                      });
-                    },
-                  ),
-            IconButton(
-              icon: Icon(Icons.fast_forward),
-              onPressed: () {
-                // 10초 이후로 감기 버튼 눌렀을 때 동작
-              },
-            ),
-            IconButton(
-              icon: Icon(Icons.message),
-              onPressed: () {
-                // 말풍선 아이콘 버튼 눌렀을 때 동작
-              },
-            ),
-          ],
+        child: Container(
+          height: 60.0,
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              IconButton(
+                icon: Text(playbackSpeed == PlaybackSpeed.normal
+                    ? '1x'
+                    : playbackSpeed == PlaybackSpeed.doubleSpeed
+                        ? '2x'
+                        : '3x'),
+                onPressed: () {
+                  setState(() {
+                    if (playbackSpeed == PlaybackSpeed.normal) {
+                      playbackSpeed = PlaybackSpeed.doubleSpeed;
+                    } else if (playbackSpeed == PlaybackSpeed.doubleSpeed) {
+                      playbackSpeed = PlaybackSpeed.tripleSpeed;
+                    } else {
+                      playbackSpeed = PlaybackSpeed.normal;
+                    }
+                  });
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.fast_rewind),
+                onPressed: () {
+                  // 10초 이전으로 감기 버튼 눌렀을 때 동작
+                },
+              ),
+              isPlaying
+                  ? IconButton(
+                      icon: Icon(Icons.stop),
+                      onPressed: () {
+                        setState(() {
+                          isPlaying = false;
+                        });
+                      },
+                    )
+                  : IconButton(
+                      icon: Icon(Icons.pause),
+                      onPressed: () {
+                        setState(() {
+                          isPlaying = true;
+                        });
+                      },
+                    ),
+              IconButton(
+                icon: Icon(Icons.fast_forward),
+                onPressed: () {
+                  // 10초 이후로 감기 버튼 눌렀을 때 동작
+                },
+              ),
+              IconButton(
+                icon: Icon(Icons.message),
+                onPressed: () {
+                  // 말풍선 아이콘 버튼 눌렀을 때 동작
+                },
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
+}
+
+void main() {
+  runApp(MaterialApp(
+    home: VoiceTextScreen(),
+  ));
 }
