@@ -76,7 +76,7 @@ Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
     print("Error: ${snapshot.error}");
     return Text("Error1: ${snapshot.error}");
   } else if (snapshot.hasData && snapshot.data != "" && snapshot.data != null) {
-    return HomeScreen();
+    return VoiceSettingScreen();
   } else {
     // loading
     return LoginPage();

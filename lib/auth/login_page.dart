@@ -94,14 +94,12 @@ class _LoginPageState extends State<LoginPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 ElevatedButton(
-                  onPressed: _login, // todo
-
-                  // onPressed: () => Get.offAll(() => HomeScreen()),
+                  onPressed: _login,
                   child: Text('Login'),
                 ),
                 // SizedBox(width: 16.0),
                 // ElevatedButton(
-                //   onPressed: _googleLogin, // todo
+                //   onPressed: _googleLogin,
                 //   child: Text('Google Login'),
                 // ),
               ],
