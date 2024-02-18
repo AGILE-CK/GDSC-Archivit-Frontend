@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:gdsc/service/token_function.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 const String URL =
@@ -16,6 +17,8 @@ const String FILE_DELETE = "file/delete";
 const String TEXT_CREATE = "text/create";
 const String RECORD_CREATE = "record/create";
 
+const String GOOGLECLIENTID =
+    '584965141712-eku96vnto2vr7t4bk584kkf7q4mer4hn.apps.googleusercontent.com';
 Future<http.Response> signUp(String email, String password) async {
   var url = Uri.parse(URL + SIGNUP);
 
@@ -47,9 +50,6 @@ Future<http.Response> login(String email, String password) async {
 Future<http.Response> ping() async {
   var url = Uri.parse(URL + PING);
   var token = await getToken();
-
-//{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Inp6ejU0MjEzMEBuYXZlci5jb20iLCJleHAiOjE3MDgzNTkwNDZ9.atFvBuEA6rt4YWg7g0UAUoANdyNes0lN6E95opN8qvg"}
-
   token = jsonDecode(token)['token'];
 
   return await http.get(url, headers: {
@@ -58,7 +58,19 @@ Future<http.Response> ping() async {
   });
 }
 
-// if (response.statusCode == 401) {
+//Google login
+Future<http.Response> googleLogin() async {
+  final GoogleSignIn _googleSignIn = GoogleSignIn(
+    clientId: GOOGLECLIENTID,
+  );
 
-//     Get.to(LoginPage());
-//   }
+  // Google 로그인을 수행합니다.
+  final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+
+  // 로그인에 성공하면 Google 로그인 세션의 ID 토큰을 가져옵니다.
+  final String? idToken = (await googleUser!.authentication).idToken;
+
+  // 서버에 로그인 요청을 보냅니다.
+  var url = Uri.parse(URL + GOOGLE_LOGIN);
+  return await http.post(url, body: {'idtoken': idToken});
+}
