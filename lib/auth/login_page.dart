@@ -29,23 +29,23 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
 
   //Google login
-  Future<void> _googleLogin() async {
-    // 구글 로그인 처리 로직을 추가하세요.
-    // ...
+  // Future<void> _googleLogin() async {
+  //   // 구글 로그인 처리 로직을 추가하세요.
+  //   // ...
 
-    var response = await googleLogin();
+  //   var response = await googleLogin();
 
-    if (response.statusCode == 200) {
-      // 로그인 성공: 응답 본문을 출력하거나, 다음 페이지로 이동합니다.
-      print('Response body: ${response.body}');
-      // {token : "asdfasdf
-      await setToken(response.body);
-      Get.offAll(() => HomeScreen());
-    } else {
-      // 로그인 실패: 에러 메시지를 출력합니다.
-      print('Failed to login: ${response.statusCode}');
-    }
-  }
+  //   if (response.statusCode == 200) {
+  //     // 로그인 성공: 응답 본문을 출력하거나, 다음 페이지로 이동합니다.
+  //     print('Response body: ${response.body}');
+  //     // {token : "asdfasdf
+  //     await setToken(response.body);
+  //     Get.offAll(() => HomeScreen());
+  //   } else {
+  //     // 로그인 실패: 에러 메시지를 출력합니다.
+  //     print('Failed to login: ${response.statusCode}');
+  //   }
+  // }
 
   Future<void> _login() async {
     // 로그인 처리 로직을 추가하세요.

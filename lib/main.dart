@@ -79,6 +79,6 @@ Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
     return HomeScreen();
   } else {
     // loading
-    return VoiceTextScreen();
+    return LoginPage();
   }
 }

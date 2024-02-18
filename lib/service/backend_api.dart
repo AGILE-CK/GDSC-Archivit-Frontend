@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:gdsc/service/token_function.dart';
-import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
 
 const String URL =
@@ -58,19 +57,19 @@ Future<http.Response> ping() async {
   });
 }
 
-//Google login
-Future<http.Response> googleLogin() async {
-  final GoogleSignIn _googleSignIn = GoogleSignIn(
-    clientId: GOOGLECLIENTID,
-  );
+// //Google login
+// Future<http.Response> googleLogin() async {
+//   final GoogleSignIn _googleSignIn = GoogleSignIn(
+//     clientId: GOOGLECLIENTID,
+//   );
 
-  // Google 로그인을 수행합니다.
-  final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
+//   // Google 로그인을 수행합니다.
+//   final GoogleSignInAccount? googleUser = await _googleSignIn.signIn();
 
-  // 로그인에 성공하면 Google 로그인 세션의 ID 토큰을 가져옵니다.
-  final String? idToken = (await googleUser!.authentication).idToken;
+//   // 로그인에 성공하면 Google 로그인 세션의 ID 토큰을 가져옵니다.
+//   final String? idToken = (await googleUser!.authentication).idToken;
 
-  // 서버에 로그인 요청을 보냅니다.
-  var url = Uri.parse(URL + GOOGLE_LOGIN);
-  return await http.post(url, body: {'idtoken': idToken});
-}
+//   // 서버에 로그인 요청을 보냅니다.
+//   var url = Uri.parse(URL + GOOGLE_LOGIN);
+//   return await http.post(url, body: {'idtoken': idToken});
+// }
