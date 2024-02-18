@@ -1,9 +1,11 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/home/in_folder_page.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/routing/bottom_bar_routing_page.dart';
+import 'package:gdsc/service/backend_api.dart';
 import 'package:gdsc/service/get_today.dart';
 import 'package:gdsc/widget/floating_point.dart';
 import 'package:get/get.dart';
@@ -76,8 +78,19 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  Future<void> test() async {
+    var response = await ping();
+    if (response.statusCode == 200) {
+      print('Response body: ${response.body}');
+    } else {
+      print('Failed to ping: ${response.body}');
+      Get.offAll(LoginPage());
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    test();
     return Scaffold(
       floatingActionButton: floatingInHomePage(context),
       backgroundColor: Colors.white,

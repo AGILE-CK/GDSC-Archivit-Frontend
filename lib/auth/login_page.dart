@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gdsc/auth/signup_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
+import 'package:gdsc/service/backend_api.dart';
+import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
   runApp(MyApp());
@@ -25,48 +28,24 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _usernameController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  void _login() {
+  Future<void> _login() async {
     // 로그인 처리 로직을 추가하세요.
     String username = _usernameController.text;
     String password = _passwordController.text;
 
-    // 예시: 간단한 로그인 로직
-    if (username == '사용자명' && password == '비밀번호') {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('로그인 성공!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                  Get.offAll(() => HomeScreen());
-                },
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
+    var response = await login(username, password);
+
+    if (response.statusCode == 200) {
+      // 로그인 성공: 응답 본문을 출력하거나, 다음 페이지로 이동합니다.
+      print('Response body: ${response.body}');
+      // {token : "asdfasdf"}
+      var token = response.body;
+
+      await setToken(response.body);
+      Get.offAll(() => HomeScreen());
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('로그인 실패'),
-            content: Text('사용자명 또는 비밀번호를 확인하세요.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.of(context).pop();
-                },
-                child: Text('확인'),
-              ),
-            ],
-          );
-        },
-      );
+      // 로그인 실패: 에러 메시지를 출력합니다.
+      print('Failed to login: ${response.statusCode}');
     }
   }
 
@@ -93,8 +72,9 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
-              // onPressed: _login, // todo
-              onPressed: () => Get.offAll(() => HomeScreen()),
+              onPressed: _login, // todo
+
+              // onPressed: () => Get.offAll(() => HomeScreen()),
               child: Text('Login'),
             ),
             SizedBox(height: 16.0),
