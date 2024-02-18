@@ -1,39 +1,63 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_markdown/flutter_markdown.dart';
+import 'package:get/get.dart';
 
 class BlankMemoPage extends StatefulWidget {
-  const BlankMemoPage({Key? key}) : super(key: key);
-
   @override
   _BlankMemoPageState createState() => _BlankMemoPageState();
 }
 
 class _BlankMemoPageState extends State<BlankMemoPage> {
-  final controller = TextEditingController();
+  final TextEditingController _textEditingController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    controller.text = 'Initial markdown text';
-  }
-
-  var markdownText = ''' ''';
-
-  Widget getMarkdownWidget(String text) {
-    return Markdown(
-        data: text,
-        styleSheet: MarkdownStyleSheet(
-          p: const TextStyle(fontSize: 24),
-        ));
-  }
+  String textContent = "12341243";
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Markdown Editor'),
+        leading: GestureDetector(
+          onTap: () {
+            Get.back();
+          },
+          child: const Icon(
+            Icons.arrow_back,
+            size: 30.0,
+            color: Colors.black,
+          ),
+        ),
+        title: const Text(
+          "todo",
+          style: TextStyle(
+            color: Colors.black,
+            fontSize: 16.0,
+          ),
+        ),
       ),
-      body: getMarkdownWidget(markdownText),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: GestureDetector(
+                onTap: () {
+                  FocusScope.of(context).requestFocus(FocusNode());
+                },
+                child: TextField(
+                  onChanged: (value) {
+                    setState(() => _textEditingController.text = value);
+                  },
+                  controller: _textEditingController,
+                  maxLines: null,
+                  decoration: const InputDecoration(
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
