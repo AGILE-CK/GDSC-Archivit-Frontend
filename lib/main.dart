@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gdsc/auth/login_page.dart';
+import 'package:gdsc/home/blank_memo_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/home/voice_setting.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
@@ -75,10 +76,10 @@ Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
       return HomeScreen();
     } else {
       // not logged in (token does not exist)
-      return VoiceTextScreen();
+      return BlankMemoPage();
     }
   } else {
     // loading
-    return VoiceTextScreen();
+    return BlankMemoPage();
   }
 }
