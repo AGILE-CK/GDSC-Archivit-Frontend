@@ -1,4 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:path_provider/path_provider.dart';
 
 class VoiceSettingScreen extends StatefulWidget {
   @override
@@ -6,8 +12,21 @@ class VoiceSettingScreen extends StatefulWidget {
 }
 
 class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
-  List<String> recordedKeywords = [];
-  TextEditingController _textEditingController = TextEditingController();
+  FlutterSoundRecorder recorder = FlutterSoundRecorder();
+  late Directory file_path;
+
+  //init
+  @override
+  void initState() {
+    super.initState();
+    initializeDirectory();
+  }
+
+  void initializeDirectory() {
+    getApplicationDocumentsDirectory().then((dir) {
+      file_path = dir;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +74,7 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                       text: TextSpan(
                         children: [
                           TextSpan(
-                            text: 'Recommended ',
+                            text: 'Start ',
                             style: TextStyle(
                               color: Color(0xFF007AFF),
                               fontSize: 20.0,
@@ -63,7 +82,7 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                             ),
                           ),
                           TextSpan(
-                            text: 'keyword for initiating recording',
+                            text: 'Background Recording',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -75,14 +94,32 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                     ),
                     SizedBox(height: 10),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        _buildCircle('report'),
-                        _buildCircle('Stop'),
-                        _buildCircle('Hey'),
-                        _buildCircle('Start'),
+                        GestureDetector(
+                          onTap: () async {
+                            print("Start service");
+                            // await recorder.openRecorder(); // await 추가
+                            // await recorder.startRecorder(
+                            //   // await 추가
+                            //   toFile: file_path.path + "/test1234.mp4",
+                            //   codec: Codec.aacMP4,
+                            // );
+                            FlutterBackgroundService().startService();
+                          },
+                          child: _buildCircle('START'),
+                        ),
+                        SizedBox(width: 20),
+                        GestureDetector(
+                          onTap: () {
+                            FlutterBackgroundService().invoke(
+                              "stopService",
+                            );
+                          },
+                          child: _buildCircle('STOP'),
+                        ),
                       ],
-                    ),
+                    )
                   ],
                 ),
               ),

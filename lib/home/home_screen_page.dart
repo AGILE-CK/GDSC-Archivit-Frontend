@@ -170,9 +170,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   spacing: 17,
                   runSpacing: 19.0,
                   children: files.map((file) {
-                    String ext = path.extension(file.path).toLowerCase();
+                    String ext = path.extension(file.path);
 
-                    if (ext == 'm4a') {
+                    if (ext == '.mp4') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);
@@ -214,7 +214,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       );
-                    } else if (ext == 'json') {
+                    } else if (ext == '.json' || ext == '.txt') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);

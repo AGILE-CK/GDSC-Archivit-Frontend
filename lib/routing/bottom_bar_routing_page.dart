@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gdsc/home/home_screen_page.dart';
+import 'package:gdsc/home/voice_setting.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -12,14 +13,14 @@ class BottomBarRoutingPage extends StatefulWidget {
 class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
   List<Widget> navBarPages = [
     HomeScreen(),
-    HomeScreen(),
+    VoiceSettingScreen(),
     // HomeScreen(),
     // HomeScreen(),
   ];
 
   void _onItemTapped(int index) {
     Provider.of<BottomBarProvider>(context, listen: false).currentIndex = index;
-    Get.offAll(navBarPages[index]);
+    Get.to(() => navBarPages[index]);
   }
 
   @override
