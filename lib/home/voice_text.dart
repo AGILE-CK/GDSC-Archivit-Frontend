@@ -10,6 +10,9 @@ class Conversation {
 }
 
 class VoiceTextScreen extends StatefulWidget {
+  final String filePath;
+
+  VoiceTextScreen({required this.filePath});
   @override
   _VoiceTextScreenState createState() => _VoiceTextScreenState();
 }
