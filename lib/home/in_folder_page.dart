@@ -206,7 +206,7 @@ class _InFolderPageState extends State<InFolderPage>
                         ),
                         child: ListTile(
                           title: Text(
-                            "📝️" + texts[index].path.split('/').last,
+                            "📝️" + voices[index].path.split('/').last,
                             style: TextStyle(fontWeight: FontWeight.bold),
                           ),
                           subtitle: Text(

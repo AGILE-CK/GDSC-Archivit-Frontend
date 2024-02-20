@@ -171,9 +171,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   spacing: 17,
                   runSpacing: 19.0,
                   children: files.map((file) {
-                    String ext = path.extension(file.path).toLowerCase();
+                    String ext = path.extension(file.path);
 
-                    if (ext == 'm4a') {
+                    if (ext == '.m4a' || ext == '.mp4') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);
@@ -197,7 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               file.path.split('/').last,
                               style: const TextStyle(
-                                fontSize: 15.0,
+                                fontSize: 13.0,
                                 color: Colors.black,
                               ),
                             ),
@@ -216,7 +216,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           ],
                         ),
                       );
-                    } else if (ext == 'txt') {
+                    } else if (ext == '.json' || ext == '.txt') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);

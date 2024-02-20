@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class OpenFilePage extends StatefulWidget {
   final String filePath;
@@ -47,7 +49,7 @@ class _OpenFilePage extends State<OpenFilePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.save),
-            onPressed: () => _saveTextFile(widget.filePath),
+            onPressed: () => _saveTextFile(widget.filePath, context),
           ),
         ],
       ),
@@ -83,9 +85,10 @@ class _OpenFilePage extends State<OpenFilePage> {
     setState(() {});
   }
 
-  Future<void> _saveTextFile(String path) async {
+  Future<void> _saveTextFile(String path, context) async {
     final File file = File('$path');
     await file.writeAsString(_textEditingController.text);
+    Provider.of<FolderPageProvider>(context, listen: false).listFilesAndTexts();
     Get.back();
   }
 }

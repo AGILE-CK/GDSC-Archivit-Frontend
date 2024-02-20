@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:flutter_sound/public/flutter_sound_player.dart';
 
 enum PlaybackSpeed { normal, doubleSpeed, tripleSpeed }
 
@@ -20,6 +22,7 @@ class VoiceTextScreen extends StatefulWidget {
 class _VoiceTextScreenState extends State<VoiceTextScreen> {
   bool isPlaying = false;
   PlaybackSpeed playbackSpeed = PlaybackSpeed.normal;
+  String filePath = "";
 
   // 대화를 나타내는 Conversation 객체의 리스트
   List<Conversation> conversation = [
@@ -35,6 +38,36 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
     Conversation("C", "I'm planning to go hiking with some friends."),
     Conversation("A", "Sounds like fun!"),
   ];
+  FlutterSoundPlayer _player = FlutterSoundPlayer();
+
+  @override
+  void initState() {
+    super.initState();
+    filePath = widget.filePath;
+    _player.openAudioSession();
+  }
+
+  @override
+  void dispose() {
+    _player.closeAudioSession();
+    super.dispose();
+  }
+
+  Future<void> _play() async {
+    await _player.startPlayer(fromURI: filePath, codec: Codec.aacMP4);
+  }
+
+  Future<void> _pause() async {
+    await _player.pausePlayer();
+  }
+
+  Future<void> _forward() async {
+    await _player.seekToPlayer(Duration(seconds: 5));
+  }
+
+  Future<void> _rewind() async {
+    await _player.seekToPlayer(Duration(seconds: 5));
+  }
 
   @override
   Widget build(BuildContext context) {
