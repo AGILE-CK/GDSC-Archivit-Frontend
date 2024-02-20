@@ -67,3 +67,30 @@ Future<http.Response> uploadRecording(String filePath) async {
   var streamedResponse = await request.send();
   return http.Response.fromStream(streamedResponse);
 }
+
+Future<http.Response> uploadText(String filePath) async {
+  var url = Uri.parse(URL + TEXT_CREATE);
+  var token = await getToken();
+  token = jsonDecode(token)['token'];
+  var request = http.MultipartRequest('POST', url)
+    ..headers['Authorization'] = 'Bearer $token'
+    ..files.add(await http.MultipartFile.fromPath('file', filePath));
+  var streamedResponse = await request.send();
+  return http.Response.fromStream(streamedResponse);
+}
+
+Future<http.Response> deleteFile(String filePath) async {
+  var url = Uri.parse(URL + FILE_DELETE);
+  var token = await getToken();
+  token = jsonDecode(token)['token'];
+  return await http.delete(
+    url,
+    body: jsonEncode(<String, String>{
+      'file': filePath,
+    }),
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer $token'
+    },
+  );
+}

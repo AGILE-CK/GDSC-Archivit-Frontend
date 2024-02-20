@@ -66,3 +66,25 @@ Future<bool> clam(File file) async {
     return false;
   }
 }
+
+Future<void> transcribeFile(File file) async {
+  var url = Uri.parse(URL + transcribe);
+
+  var request = http.MultipartRequest('POST', url);
+  request.headers['accept'] = 'application/json';
+  request.files.add(await http.MultipartFile.fromPath('file', file.path,
+      contentType: MediaType('audio', 'x-m4a')));
+
+  var response = await request.send();
+
+  var responseBody = await http.Response.fromStream(response);
+  print(responseBody.body);
+
+  Map<String, dynamic> decodedJson = jsonDecode(responseBody.body);
+
+  if (response.statusCode == 200) {
+    print(decodedJson['transcription']);
+  } else {
+    print("Error");
+  }
+}
