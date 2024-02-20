@@ -84,7 +84,8 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                             ),
                           ),
                           TextSpan(
-                            text: 'Background Recording',
+                            text:
+                                'Background Recording with trigger by violent sound',
                             style: TextStyle(
                               color: Colors.white,
                               fontSize: 20.0,
@@ -94,7 +95,7 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10),
+                    SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
