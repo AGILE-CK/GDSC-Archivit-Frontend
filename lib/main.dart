@@ -58,7 +58,7 @@ FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 // 녹음 시작 함수
 Future<String> _startRecording() async {
   Directory tempDir = await createUserDataDirectory();
-  String path = '${tempDir.path}/flutter_sound-tmp.m4a';
+  String path = '${tempDir.path}/flutter_sound-tmp.mp4';
   await _recorder.openAudioSession();
   _recorder.startRecorder(
     toFile: path,
@@ -141,6 +141,13 @@ Future initRecorder() async {
 
 @pragma("vm:entry-point")
 Future<void> onStart(ServiceInstance service) async {
+  if (Platform.isAndroid) {
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      print("Microphone permission not granted");
+      return;
+    }
+  }
   DartPluginRegistrant.ensureInitialized();
   final FlutterLocalNotificationsPlugin flutterLocalPlugin =
       FlutterLocalNotificationsPlugin();

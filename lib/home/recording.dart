@@ -3,6 +3,7 @@
 import 'dart:async'; // 이 줄을 추가해주세요.
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:gdsc/service/backend_api.dart';
 import 'package:gdsc/service/get_default_directory.dart';
@@ -38,6 +39,14 @@ class _RecordingScreenState extends State<RecordingScreen> {
 
   Future<void> _initRecorder() async {
     try {
+      //plaform is andriod
+      if (Platform.isAndroid) {
+        var status = await Permission.microphone.request();
+        if (status != PermissionStatus.granted) {
+          print("Microphone permission not granted");
+          return;
+        }
+      }
       // var status = await Permission.microphone.request();
       // if (status != PermissionStatus.granted) {
       //   print("Microphone permission not granted");
@@ -60,7 +69,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
     if (!isRecording) {
       Directory tempDir = await createUserDataDirectory();
 
-      String filePath = '${tempDir.path}/$path.m4a';
+      String filePath = '${tempDir.path}/$path.mp4';
       try {
         await _recorder.startRecorder(
           toFile: filePath,
@@ -205,13 +214,15 @@ class _RecordingScreenState extends State<RecordingScreen> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
+                      SizedBox(height: 40), // 텍스트와 아이콘 사이의 간격 조절
                       Transform.translate(
                         offset: Offset(0, 50), // Y 방향으로 50만큼 이동
+
                         child: Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Icon(
-                              Icons.location_on,
+                              Icons.mic,
                               color: Colors.white,
                               size: 30.0,
                             ),
@@ -223,7 +234,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
                                     .requestFocus(FocusNode());
                               },
                               child: Text(
-                                '위치',
+                                'Start the Recording',
                                 style: TextStyle(
                                   color: Colors.grey,
                                   fontSize: 20.0,
@@ -235,29 +246,6 @@ class _RecordingScreenState extends State<RecordingScreen> {
                         ),
                       ),
                       SizedBox(height: 40), // 텍스트와 아이콘 사이의 간격 조절
-                      Transform.translate(
-                        offset: Offset(0, 20), // Y 방향으로 20만큼 이동
-                        child: GestureDetector(
-                          onTap: () {
-                            // "Type the name" 텍스트를 누르면 해당 텍스트에 포커스를 줍니다.
-                            FocusScope.of(context).requestFocus(FocusNode());
-                          },
-                          child: Center(
-                            child: TextField(
-                              textAlign: TextAlign.center, // 텍스트를 가운데로 맞춥니다.
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 20.0,
-                              ),
-                              decoration: InputDecoration(
-                                hintText: 'Type the name',
-                                hintStyle: TextStyle(color: Colors.grey),
-                                border: InputBorder.none, // 텍스트 필드의 외곽선을 없앱니다.
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
                     ],
                   ),
                 ),
@@ -407,9 +395,13 @@ class _RecordingScreenState extends State<RecordingScreen> {
             ),
             TextButton(
               onPressed: () async {
+                await Provider.of<FolderPageProvider>(context, listen: false)
+                    .listFilesAndTexts();
+
                 Navigator.of(context).pop(); // Close the dialog
                 // Proceed with save operation
                 await _saveRecording();
+
                 Get.back();
               },
               child: Text(
@@ -437,10 +429,6 @@ class _RecordingScreenState extends State<RecordingScreen> {
             SnackBar(content: Text('Recording uploaded successfully.')));
         // Assume recording is no longer needed and can be deleted
         final file = File(_recordFilePath!);
-
-        // if (await file.exists()) {
-        //   await file.delete(); // Delete the recorded file if saved successfully
-        // }
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to upload recording.')));

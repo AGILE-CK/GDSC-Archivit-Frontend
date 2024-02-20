@@ -173,7 +173,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: files.map((file) {
                     String ext = path.extension(file.path);
 
-                    if (ext == '.m4a') {
+                    if (ext == '.m4a' || ext == '.mp4') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);
