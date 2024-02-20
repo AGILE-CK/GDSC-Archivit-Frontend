@@ -1,8 +1,10 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/provider/make_text_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class BlankMemoPage extends StatefulWidget {
   @override
@@ -19,21 +21,25 @@ class _BlankMemoPageState extends State<BlankMemoPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          GestureDetector(
-            onTap: () {
-              _saveTextFile();
-              Get.back();
-            },
-            child: const Padding(
-              padding: EdgeInsets.only(right: 16.0),
-              child: Text(
-                "Done",
-                style: TextStyle(
-                  color: Colors.blue,
-                  fontSize: 16.0,
+          Consumer<MakeTextFilePageProvider>(
+            builder: (context, makeTextFilePageProvider, child) {
+              return GestureDetector(
+                onTap: () {
+                  _saveTextFile(makeTextFilePageProvider.path);
+                  Get.back();
+                },
+                child: const Padding(
+                  padding: EdgeInsets.only(right: 16.0),
+                  child: Text(
+                    "Done",
+                    style: TextStyle(
+                      color: Colors.blue,
+                      fontSize: 16.0,
+                    ),
+                  ),
                 ),
-              ),
-            ),
+              );
+            },
           ),
         ],
         leading: GestureDetector(
@@ -80,16 +86,10 @@ class _BlankMemoPageState extends State<BlankMemoPage> {
     );
   }
 
-  Future<void> _saveTextFile() async {
-    // todo
+  Future<void> _saveTextFile(String path) async {
     final Directory directory = await getApplicationDocumentsDirectory();
-    final File file = File('${directory.path}/my_text_file.txt');
-    await file.writeAsString(_textEditingController.text);
-  }
 
-  @override
-  void dispose() {
-    _saveTextFile();
-    super.dispose();
+    final File file = File('${directory.path}/$path.txt'); //provider todo
+    await file.writeAsString(_textEditingController.text);
   }
 }

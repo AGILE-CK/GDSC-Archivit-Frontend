@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
 
 class MakeTextFilePageProvider extends ChangeNotifier {
-  String _text = ''; // text to be saved in the file todo
-  String get text => _text;
+  String _path = ''; // todo
 
-  void setText(String text) {
-    _text = text;
+  String get path => _path;
+
+  void setPath(String path) {
+    _path = path;
     notifyListeners();
   }
 }

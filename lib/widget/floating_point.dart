@@ -7,9 +7,11 @@ import 'package:gdsc/colors.dart';
 import 'package:gdsc/home/blank_memo_page.dart';
 import 'package:gdsc/home/recording.dart';
 import 'package:gdsc/home/school_page.dart';
+import 'package:gdsc/provider/make_text_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 SpeedDialChild buildSpeedDialChild(
     String text, IconData icon, VoidCallback onTap) {
@@ -152,25 +154,25 @@ Future<void> showTemplateDialog(context) async {
     content: Column(
       children: <Widget>[
         TextButton(
-          child: const Text('Blank Memo'),
-          onPressed: () =>
-              showNameDialog('Blank Memo', BlankMemoPage(), context),
-        ),
+            child: const Text('Blank Memo'),
+            onPressed: () {
+              showNameDialog('Blank Memo', BlankMemoPage(), context);
+            }),
         TextButton(
-          child: const Text('School Template'),
-          onPressed: () =>
-              showNameDialog('School Template', SchoolPage(), context),
-        ),
+            child: const Text('School Template'),
+            onPressed: () {
+              showNameDialog('School Template', SchoolPage(), context);
+            }),
         TextButton(
-          child: const Text('Domestic Template'),
-          onPressed: () =>
-              showNameDialog('Domestic Template', SchoolPage(), context),
-        ),
+            child: const Text('Domestic Template'),
+            onPressed: () {
+              showNameDialog('Domestic Template', SchoolPage(), context);
+            }),
         TextButton(
-          child: const Text('Dating Template'),
-          onPressed: () =>
-              showNameDialog('Dating Template', SchoolPage(), context),
-        ),
+            child: const Text('Dating Template'),
+            onPressed: () {
+              showNameDialog('Dating Template', SchoolPage(), context);
+            }),
       ],
     ),
   );
@@ -194,6 +196,8 @@ Future<void> showNameDialog(String template, Widget page, context) async {
           const SnackBar(content: Text('Name cannot be empty')),
         );
       } else {
+        Provider.of<MakeTextFilePageProvider>(context, listen: false)
+            .setPath(controller.text.trim());
         Navigator.of(context).pop();
         Get.to(page); // Go to the template page
       }
