@@ -62,12 +62,15 @@ SpeedDial floatingInHomePage(context) {
     children: [
       buildSpeedDialChild('Voice Memo', FluentIcons.person_voice_16_regular,
           () {
+        Provider.of<MakeFilePageProvider>(context, listen: false).setPath('');
         makeRecordDialog(context);
       }),
       buildSpeedDialChild('Text Memo', FluentIcons.document_16_regular, () {
+        Provider.of<MakeFilePageProvider>(context, listen: false).setPath('');
         showTemplateDialog(context);
       }),
       buildSpeedDialChild('Folder', FluentIcons.folder_16_regular, () {
+        Provider.of<MakeFilePageProvider>(context, listen: false).setPath('');
         makeFolderDialog(context);
       }),
     ],

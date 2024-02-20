@@ -219,7 +219,9 @@ class _InFolderPageState extends State<InFolderPage>
                             style: const TextStyle(fontSize: 10),
                           ),
                           onTap: () {
-                            Get.to(() => VoiceTextScreen());
+                            Get.to(() => VoiceTextScreen(
+                                  filePath: voices[index].path,
+                                ));
                           },
                           onLongPress: () {
                             showEditDialog(voices[index]);
