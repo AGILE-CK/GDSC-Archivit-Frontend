@@ -2,6 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gdsc/colors.dart';
+import 'package:gdsc/home/memo/open_page.dart';
+import 'package:gdsc/home/voice_text.dart';
+import 'package:gdsc/provider/in_folder_page_provider.dart';
+import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 
@@ -15,7 +19,6 @@ class InFolderPage extends StatefulWidget {
 
 class _InFolderPageState extends State<InFolderPage>
     with TickerProviderStateMixin {
-  bool isTextSelected = true;
   late TabController _tabController;
 
   @override
@@ -91,14 +94,21 @@ class _InFolderPageState extends State<InFolderPage>
   @override
   Widget build(BuildContext context) {
     FileSystemEntity folder = context.watch<FolderPageProvider>().selectedFile;
-    List<FileSystemEntity> files = Directory(folder.path).listSync();
+
+    context
+        .read<InFolderPageProvider>()
+        .listFilesAndTexts(folder.path.split('/').last);
+
+    List<FileSystemEntity> files = context.watch<InFolderPageProvider>().files;
 
 //.txt
     List<FileSystemEntity> texts = files
         .where((element) => element.path.split('.').last == 'txt')
         .toList();
     List<FileSystemEntity> voices = files
-        .where((element) => element.path.split('.').last == 'm4a')
+        .where((element) =>
+            element.path.split('.').last == 'mp4' ||
+            element.path.split('.').last == 'm4a')
         .toList();
 
     return Scaffold(
@@ -133,46 +143,96 @@ class _InFolderPageState extends State<InFolderPage>
         ),
         floatingActionButton: floatingInInFolderPage(context),
         body: Consumer<FolderPageProvider>(builder: (context, data, child) {
-          return TabBarView(
-            controller: _tabController,
-            children: [
-              ListView.builder(
-                itemCount: texts.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(texts[index].path.split('/').last),
-                    onTap: () {
-                      // if (isTextSelected) {
-                      //   Get.toNamed('/text_memo_page', arguments: files[index]);
-                      // } else {
-                      //   Get.toNamed('/voice_memo_page', arguments: files[index]);
-                      // }
+          return Container(
+            color: Color.fromRGBO(242, 248, 248, 1),
+            child: Container(
+              color: Colors.white,
+              margin: const EdgeInsets.all(10),
+              child: TabBarView(
+                controller: _tabController,
+                children: [
+                  ListView.builder(
+                    itemCount: texts.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          //only downside
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.black,
+                              width: 0.2,
+                            ),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            "📝️" + texts[index].path.split('/').last,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            File(texts[index].path)
+                                .statSync()
+                                .modified
+                                .toLocal()
+                                .toString()
+                                .split('.')[0],
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          onTap: () {
+                            Get.to(() =>
+                                OpenFilePage(filePath: texts[index].path));
+                          },
+                          onLongPress: () {
+                            showEditDialog(texts[index]);
+                          },
+                        ),
+                      );
                     },
-                    onLongPress: () {
-                      showEditDialog(texts[index]);
+                  ),
+                  ListView.builder(
+                    itemCount: voices.length,
+                    itemBuilder: (context, index) {
+                      return Container(
+                        margin: const EdgeInsets.all(10),
+                        decoration: BoxDecoration(
+                          //only downside
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Colors.black,
+                              width: 0.2,
+                            ),
+                          ),
+                        ),
+                        child: ListTile(
+                          title: Text(
+                            "📝️" + texts[index].path.split('/').last,
+                            style: TextStyle(fontWeight: FontWeight.bold),
+                          ),
+                          subtitle: Text(
+                            File(texts[index].path)
+                                .statSync()
+                                .modified
+                                .toLocal()
+                                .toString()
+                                .split('.')[0],
+                            style: const TextStyle(fontSize: 10),
+                          ),
+                          onTap: () {
+                            Get.to(() => VoiceTextScreen(
+                                  filePath: voices[index].path,
+                                ));
+                          },
+                          onLongPress: () {
+                            showEditDialog(voices[index]);
+                          },
+                        ),
+                      );
                     },
-                  );
-                },
+                  ),
+                ],
               ),
-              ListView.builder(
-                itemCount: voices.length,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    title: Text(voices[index].path.split('/').last),
-                    onTap: () {
-                      // if (isTextSelected) {
-                      //   Get.toNamed('/text_memo_page', arguments: files[index]);
-                      // } else {
-                      //   Get.toNamed('/voice_memo_page', arguments: files[index]);
-                      // }
-                    },
-                    onLongPress: () {
-                      showEditDialog(voices[index]);
-                    },
-                  );
-                },
-              ),
-            ],
+            ),
           );
         }));
   }

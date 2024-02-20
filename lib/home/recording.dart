@@ -1,6 +1,15 @@
+// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables
+
 import 'dart:async'; // 이 줄을 추가해주세요.
 import 'package:flutter/material.dart';
-import 'password.dart';
+import 'package:flutter_sound/flutter_sound.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import '../service/token_function.dart';
+import 'dart:convert';
+
 
 class RecordingScreen extends StatefulWidget {
   @override
@@ -10,7 +19,122 @@ class RecordingScreen extends StatefulWidget {
 class _RecordingScreenState extends State<RecordingScreen> {
   bool isPlaying = false;
   int timerValue = 0;
-  late Timer _timer; // Timer 변수를 선언합니다.
+  late Timer _timer;
+  bool isRecording = false;
+  FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+  bool _isRecorderInitialized = false;
+  String? _recordFilePath;
+  bool isPaused = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _initRecorder();
+  }
+
+  Future<void> _initRecorder() async {
+    try {
+      var status = await Permission.microphone.request();
+      if (status != PermissionStatus.granted) {
+        print("Microphone permission not granted");
+        return;
+      }
+      await _recorder.openAudioSession();
+      setState(() => _isRecorderInitialized = true);
+    } catch (e) {
+      print('Failed to open audio session: $e');
+    }
+  }
+  
+  void togglePlay() async {
+    if (!_isRecorderInitialized) {
+      print('Recorder not initialized');
+      return;
+    }
+
+    // Start recording
+    if (!isRecording) {
+      Directory tempDir = await getTemporaryDirectory();
+      String filePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
+      try {
+        await _recorder.startRecorder(toFile: filePath);
+        _recordFilePath = filePath;
+        _startTimer();
+        setState(() {
+          isRecording = true; // Now recording
+          isPlaying = true; // Update the playing state if necessary
+          isPaused = false; // Reset paused state
+        });
+      } catch (e) {
+        print('Failed to start recording: $e');
+      }
+    } else if (isRecording && !isPaused) {
+      // Pause recording
+      try {
+        await _recorder.pauseRecorder();
+        _timer.cancel(); // Stop the timer but do not reset timerValue
+        setState(() {
+          isPaused = true; // Recording is now paused
+          isPlaying = false; // Update the playing state if necessary
+        });
+      } catch (e) {
+        print('Failed to pause recording: $e');
+      }
+    } else if (isRecording && isPaused) {
+      // Resume recording
+      try {
+        await _recorder.resumeRecorder();
+        _startTimer(); // Resume the timer without resetting timerValue
+        setState(() {
+          isPaused = false; // Recording has resumed
+          isPlaying = true; // Update the playing state if necessary
+        });
+      } catch (e) {
+        print('Failed to resume recording: $e');
+      }
+    }
+  }
+
+
+  void _cancelRecording() async {
+    if (_recorder.isRecording || isPaused) {
+      await _recorder.stopRecorder();
+      if (_recordFilePath != null) {
+        final file = File(_recordFilePath!);
+        if (await file.exists()) {
+          await file.delete(); // Delete the recorded file
+        }
+      }
+      _timer.cancel(); // Stop the timer
+      setState(() {
+        isRecording = false;
+        isPlaying = false;
+        isPaused = false;
+        timerValue = 0; // Reset timer value
+        _recordFilePath = null; // Reset the file path
+      });
+    }
+  }
+
+
+
+  Future<void> _initRecorderSecond() async {
+    var status = await Permission.microphone.request();
+    if (status != PermissionStatus.granted) {
+      // Handle permission denial
+      print('Microphone permission not granted');
+      return;
+    }
+    await _recorder.openAudioSession();
+    setState(() => _isRecorderInitialized = true);
+  }
+
+
+  @override
+  void dispose() {
+    _recorder.closeAudioSession();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,8 +150,27 @@ class _RecordingScreenState extends State<RecordingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          if (isRecording) {
+                            // Cancel recording logic
+                            _cancelRecording();
+                          } else {
+                            // Navigate back logic
+                            Navigator.of(context).pop();
+                          }
+                        },
+                        child: Text(
+                          isRecording ? 'Cancel' : 'Back',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 20.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
                       Text(
-                        'Archivit', // Archivit 텍스트를 유지합니다.
+                        'Archivit',
                         style: TextStyle(
                           color: Colors.white,
                           fontSize: 40.0,
@@ -37,9 +180,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
                         ),
                       ),
                       GestureDetector(
-                        onTap: () {
-                          _showSavePopup(context);
-                        },
+                        onTap: () => _showSavePopup(context),
                         child: Text(
                           'Save',
                           style: TextStyle(
@@ -119,45 +260,75 @@ class _RecordingScreenState extends State<RecordingScreen> {
               ),
             ],
           ),
-          Positioned(
-            bottom: 0,
-            left: 0,
-            right: 0,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Text(
-                  _printDuration(Duration(seconds: timerValue)),
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 50.0, // 타이머 숫자의 크기 조절
-                  ),
-                ),
-                SizedBox(height: 16.0),
-                SizedBox(
-                  width: 60.0, // 아이콘의 너비 지정
-                  height: 100.0, // 아이콘의 높이 지정
-                  child: IconButton(
-                    icon: Icon(
-                      isPlaying ? Icons.stop : Icons.play_arrow,
+            Positioned(
+              bottom: 0,
+              left: 0,
+              right: 0,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+
+                  Text(
+                    _printDuration(Duration(seconds: timerValue)),
+                    style: TextStyle(
                       color: Colors.white,
-                      size: 50.0, // 아이콘 크기 조정
+                      fontSize: 30.0, // Make the timer number smaller
                     ),
-                    onPressed: () {
-                      setState(() {
-                        isPlaying = !isPlaying;
-                        if (isPlaying) {
-                          _startTimer();
-                        } else {
-                          _stopTimer();
-                        }
-                      });
-                    },
                   ),
-                ),
-              ],
+                  SizedBox(height: 80.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      GestureDetector(
+                        onTap: () {
+                            togglePlay();
+                        },
+                        child: AnimatedContainer(
+                          duration: Duration(milliseconds: 300),
+                          curve: Curves.easeInOut,
+                          padding: EdgeInsets.symmetric(
+                            vertical: 8.0, 
+                            horizontal: isRecording ? 32.0 : 16.0,
+                          ),
+                          decoration: BoxDecoration(
+                            color: isRecording ? Colors.deepPurple : Colors.purpleAccent,
+                            borderRadius: BorderRadius.circular(20.0),
+                            boxShadow: [
+                              BoxShadow(
+                                color: isRecording ? Colors.deepPurple[700]!.withOpacity(0.6) : Colors.purpleAccent.withOpacity(0.3),
+                                spreadRadius: isRecording ? 4 : 1,
+                                blurRadius: isRecording ? 10 : 2,
+                                offset: Offset(0, 3),
+                              ),
+                            ],
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                isPlaying || isPaused ? Icons.stop : Icons.mic,
+                                color: Colors.white,
+                                size: 24.0,
+                              ),
+                              SizedBox(width: 4.0),
+                              Text(
+                                isPlaying ? 'Recording' : isPaused ? 'Paused' : 'Record',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16.0,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  SizedBox(height: 25.0),
+                ],
+              ),
             ),
-          ),
         ],
       ),
     );
@@ -190,7 +361,17 @@ class _RecordingScreenState extends State<RecordingScreen> {
     });
   }
 
-  void _showSavePopup(BuildContext context) {
+ void _showSavePopup(BuildContext context) async {
+    // Check if recording is active and pause it before showing the dialog
+    if (isRecording && !isPaused) {
+      await _recorder.pauseRecorder();
+      _timer.cancel(); // Stop the timer
+      setState(() {
+        isPaused = true;
+        isPlaying = false;
+      });
+    }
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -199,45 +380,87 @@ class _RecordingScreenState extends State<RecordingScreen> {
             borderRadius: BorderRadius.circular(20.0),
           ),
           title: Center(child: Text("Save")),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text("Do you want to save your recording?"),
-              SizedBox(height: 20),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    child: Text(
-                      "No",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                  SizedBox(width: 20),
-                  TextButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => PasswordScreen(),
-                        ),
-                      );
-                    },
-                    child: Text(
-                      "Yes",
-                      style: TextStyle(fontSize: 20),
-                    ),
-                  ),
-                ],
+          content: Text("Do you want to save your recording?"),
+          actions: <Widget>[
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop(); // Close the dialog
+                if (isPaused) {
+                  // Optionally, resume recording or handle as needed
+                }
+              },
+              child: Text(
+                "No",
+                style: TextStyle(fontSize: 20),
               ),
-            ],
-          ),
+            ),
+            SizedBox(
+              width: 90, // Adjusted for formatting
+            ),
+            TextButton(
+              onPressed: () async {
+                Navigator.of(context).pop(); // Close the dialog
+                // Proceed with save operation
+                await _saveRecording();
+              },
+              child: Text(
+                "Yes",
+                style: TextStyle(fontSize: 20),
+              ),
+            ),
+          ],
         );
       },
     );
   }
-}
+
+    
+
+  Future<void> _saveRecording() async {
+    if (_recordFilePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No recording to save.')));
+      return;
+    }
+
+    try {
+      var response = await uploadRecording(_recordFilePath!);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recording uploaded successfully.')));
+        // Assume recording is no longer needed and can be deleted
+        final file = File(_recordFilePath!);
+        if (await file.exists()) {
+          await file.delete(); // Delete the recorded file if saved successfully
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to upload recording.')));
+      }
+    } catch (e) {
+      print('Error saving recording: $e');
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving recording.')));
+    } finally {
+      // Resetting the recording state for a new recording
+      await _recorder.stopRecorder(); // Ensure the recorder is stopped
+      _timer.cancel(); // Stop the timer
+      setState(() {
+        isRecording = false;
+        isPlaying = false;
+        isPaused = false;
+        timerValue = 0; // Reset timer value
+        _recordFilePath = null; // Clear the file path for a new recording
+      });
+    }
+  }
+
+
+
+  Future<http.Response> uploadRecording(String filePath) async {
+    var url = Uri.parse('https://agile-dev-dot-primeval-span-410215.du.r.appspot.com/record/create');
+    var token = await getToken();
+    token = jsonDecode(token)['token'];
+    var request = http.MultipartRequest('POST', url)
+      ..headers['Authorization'] = 'Bearer $token'
+      ..files.add(await http.MultipartFile.fromPath('file', filePath));
+    var streamedResponse = await request.send();
+    return http.Response.fromStream(streamedResponse);
+    }
+  }

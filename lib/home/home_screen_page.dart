@@ -3,6 +3,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/home/in_folder_page.dart';
+import 'package:gdsc/home/memo/open_page.dart';
 import 'package:gdsc/home/voice_text.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/routing/bottom_bar_routing_page.dart';
@@ -178,8 +179,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           showEditDialog(file);
                         },
                         onTap: () {
-                          // Open the file todo
-                          Get.to(() => VoiceTextScreen());
+                          Get.to(() => VoiceTextScreen(
+                                filePath: file.path,
+                              ));
                         },
                         child: Column(
                           children: [
@@ -220,7 +222,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           showEditDialog(file);
                         },
                         onTap: () {
-                          // Open the file todo
+                          // Open the file
+                          Get.to(() => OpenFilePage(filePath: file.path));
                         },
                         child: Column(
                           children: [
