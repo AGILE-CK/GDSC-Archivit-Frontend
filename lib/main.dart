@@ -8,6 +8,7 @@ import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/make_recording_page_provider.dart';
 import 'package:gdsc/provider/make_text_file_page_provider.dart';
+import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:gdsc/home/voice_text.dart';
@@ -52,7 +53,12 @@ class MyApp extends StatelessWidget {
             var folderPageProvider = context.read<FolderPageProvider>();
             folderPageProvider.listFilesAndTexts();
 
-            return "";
+            var token = await getToken();
+            if (token != null) {
+              return token;
+            } else {
+              return "";
+            }
           }(),
           builder: (context, snapshot) {
             return AnimatedSwitcher(
@@ -68,18 +74,12 @@ class MyApp extends StatelessWidget {
 
 Widget _splashLoadingWidget(AsyncSnapshot snapshot) {
   if (snapshot.hasError) {
+    print("Error: ${snapshot.error}");
     return Text("Error1: ${snapshot.error}");
-  } else if (snapshot.hasData) {
-    var userInfo = snapshot.data;
-    if (userInfo != "") {
-      // already logged in (token exists)
-      return HomeScreen();
-    } else {
-      // not logged in (token does not exist)
-      return BlankMemoPage();
-    }
+  } else if (snapshot.hasData && snapshot.data != "" && snapshot.data != null) {
+    return HomeScreen();
   } else {
     // loading
-    return BlankMemoPage();
+    return LoginPage();
   }
 }

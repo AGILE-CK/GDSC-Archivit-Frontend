@@ -9,14 +9,14 @@ class SignUpCompleteScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('회원가입 완료'),
+        title: Text('Sign Up Complete'),
       ),
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
-              '회원가입이 완료되었습니다!',
+              'Sign Up Complete',
               style: TextStyle(fontSize: 20.0),
             ),
             SizedBox(height: 16.0),
@@ -25,7 +25,7 @@ class SignUpCompleteScreen extends StatelessWidget {
                 // 새로운 SignUpPage를 띄워 이동
                 Get.offAll(() => LoginPage());
               },
-              child: Text('로그인 화면으로 돌아가기'),
+              child: Text('Go to Login Page'),
             ),
           ],
         ),

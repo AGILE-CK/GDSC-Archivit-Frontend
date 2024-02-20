@@ -1,7 +1,10 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
-import 'package:gdsc/auth/login_page.dart';
 import 'package:gdsc/auth/signup_complete_screen.dart';
+import 'package:gdsc/service/backend_api.dart';
 import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -9,29 +12,58 @@ class SignUpPage extends StatefulWidget {
 }
 
 class _SignUpPageState extends State<SignUpPage> {
-  TextEditingController _nameController = TextEditingController();
-  TextEditingController _phoneNumberController = TextEditingController();
   TextEditingController _idController = TextEditingController();
   TextEditingController _passwordController = TextEditingController();
 
-  void _signUp() {
+  Future<void> _signUp() async {
     // 회원가입 처리 로직을 추가하세요.
-    String name = _nameController.text;
-    String phoneNumber = _phoneNumberController.text;
-    String id = _idController.text;
+    String email = _idController.text;
     String password = _passwordController.text;
 
-    // 예시: 간단한 회원가입 로직
-    print('이름: $name');
-    print('전화번호: $phoneNumber');
-    print('ID: $id');
-    print('비밀번호: $password');
+    print('Email: $email');
+    print('Password: $password');
 
     // 여기에 실제 회원가입 처리 로직을 추가하세요.
     // ...
 
-    // 회원가입 완료 후 홈 화면으로 이동
-    Get.off(() => SignUpCompleteScreen());
+    //auth/signup
+    // @Param email body string true "email"
+    // @Param password body string true "password"
+
+    if (email == "" || password == "") {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please fill in the blanks')),
+      );
+      return;
+    }
+
+    if (!email.contains('@')) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Please enter a valid email')),
+      );
+      return;
+    }
+
+    if (password.length < 8) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Password must be at least 8 characters')),
+      );
+      return;
+    }
+
+    var response = await signUp(email, password);
+
+    if (response.statusCode == 200) {
+      // 회원가입 성공: 응답 본문을 출력하거나, 다음 페이지로 이동합니다.
+      print('Response body: ${response.body}');
+      Get.off(() => SignUpCompleteScreen());
+    } else {
+      // 회원가입 실패: 에러 메시지를 출력합니다.
+      print('Failed to sign up: ${response.body}');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to sign up: ${response.body}')),
+      );
+    }
   }
 
   @override
@@ -46,29 +78,19 @@ class _SignUpPageState extends State<SignUpPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             TextField(
-              controller: _nameController,
-              decoration: InputDecoration(labelText: '이름'),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
-              controller: _phoneNumberController,
-              decoration: InputDecoration(labelText: '전화번호'),
-            ),
-            SizedBox(height: 16.0),
-            TextField(
               controller: _idController,
-              decoration: InputDecoration(labelText: 'ID'),
+              decoration: InputDecoration(labelText: 'Email'),
             ),
             SizedBox(height: 16.0),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: '비밀번호'),
+              decoration: InputDecoration(labelText: 'Password'),
               obscureText: true,
             ),
             SizedBox(height: 32.0),
             ElevatedButton(
               onPressed: _signUp,
-              child: Text('회원가입'),
+              child: Text('SignUp'),
             ),
           ],
         ),

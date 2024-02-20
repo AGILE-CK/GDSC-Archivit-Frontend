@@ -7,7 +7,6 @@ class VoiceSettingScreen extends StatefulWidget {
 
 class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
   List<String> recordedKeywords = [];
-  List<Widget> keywordWidgets = [];
   TextEditingController _textEditingController = TextEditingController();
 
   @override
@@ -35,83 +34,8 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                           letterSpacing: 1.0,
                         ),
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          // Add function here for saving settings
-                        },
-                        child: Text(
-                          'Save',
-                          style: TextStyle(
-                            color: Colors.blue,
-                            fontSize: 20.0,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
                     ],
                   ),
-                ),
-                SizedBox(height: 20.0),
-                Container(
-                  margin: EdgeInsets.symmetric(horizontal: 16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.black,
-                    borderRadius: BorderRadius.circular(10.0),
-                    border: Border.all(color: Colors.white),
-                  ),
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Expanded(
-                            child: Padding(
-                              padding:
-                                  const EdgeInsets.symmetric(horizontal: 5.0),
-                              child: TextField(
-                                controller: _textEditingController,
-                                style: TextStyle(color: Colors.white),
-                                decoration: InputDecoration(
-                                  hintText:
-                                      'Please enter the record trigger words',
-                                  hintStyle: TextStyle(color: Colors.grey),
-                                  border: InputBorder.none,
-                                ),
-                                onChanged: (value) {
-                                  // No need to set state here
-                                },
-                                onSubmitted: (value) {
-                                  _addKeyword(value);
-                                },
-                              ),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              _addKeyword(_textEditingController.text);
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(12.0),
-                              color: Colors.transparent,
-                              child: Text(
-                                'Enter',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      Container(
-                        margin: EdgeInsets.only(top: 10.0),
-                        height: 1.0,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 20.0),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: keywordWidgets,
                 ),
                 SizedBox(height: 20.0),
               ],
@@ -189,53 +113,4 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
       ),
     );
   }
-
-  void _addKeyword(String value) {
-    if (value.isNotEmpty) {
-      setState(() {
-        recordedKeywords.add(value);
-        keywordWidgets = List.generate(recordedKeywords.length, (index) {
-          return Padding(
-            padding: const EdgeInsets.fromLTRB(16.0, 8.0, 16.0, 8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Text(
-                    recordedKeywords[index],
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 25.0,
-                    ),
-                  ),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    _removeKeyword(index);
-                  },
-                  child: Icon(
-                    Icons.delete,
-                    color: Colors.white,
-                  ),
-                ),
-              ],
-            ),
-          );
-        });
-      });
-      _textEditingController.clear();
-    }
-  }
-
-  void _removeKeyword(int index) {
-    setState(() {
-      recordedKeywords.removeAt(index);
-      keywordWidgets.removeAt(index);
-    });
-  }
-}
-
-void main() {
-  runApp(MaterialApp(
-    home: VoiceSettingScreen(),
-  ));
 }
