@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:gdsc/auth/login_page.dart';
-import 'package:gdsc/home/blank_memo_page.dart';
+import 'package:gdsc/home/memo/blank_memo_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/home/voice_setting.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
-import 'package:gdsc/provider/make_recording_page_provider.dart';
-import 'package:gdsc/provider/make_text_file_page_provider.dart';
+import 'package:gdsc/provider/in_folder_page_provider.dart';
+import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
@@ -20,10 +20,8 @@ void main() {
         // add providers here
         ChangeNotifierProvider(create: (context) => (BottomBarProvider())),
         ChangeNotifierProvider(create: (context) => (FolderPageProvider())),
-        ChangeNotifierProvider(
-            create: (context) => (MakeRecordingPageProvider())),
-        ChangeNotifierProvider(
-            create: (context) => (MakeTextFilePageProvider())),
+        ChangeNotifierProvider(create: (context) => (InFolderPageProvider())),
+        ChangeNotifierProvider(create: (context) => (MakeFilePageProvider())),
       ],
       child: const MyApp(),
     ),

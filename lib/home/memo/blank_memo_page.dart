@@ -1,7 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
-import 'package:gdsc/provider/make_text_file_page_provider.dart';
+import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -21,11 +21,11 @@ class _BlankMemoPageState extends State<BlankMemoPage> {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          Consumer<MakeTextFilePageProvider>(
+          Consumer<MakeFilePageProvider>(
             builder: (context, makeTextFilePageProvider, child) {
               return GestureDetector(
                 onTap: () {
-                  _saveTextFile(makeTextFilePageProvider.path);
+                  _saveTextFile(makeTextFilePageProvider.fullPath, context);
                   Get.back();
                 },
                 child: const Padding(
@@ -86,7 +86,7 @@ class _BlankMemoPageState extends State<BlankMemoPage> {
     );
   }
 
-  Future<void> _saveTextFile(String path) async {
+  Future<void> _saveTextFile(String path, context) async {
     final Directory directory = await getApplicationDocumentsDirectory();
 
     final File file = File('${directory.path}/$path.txt'); //provider todo

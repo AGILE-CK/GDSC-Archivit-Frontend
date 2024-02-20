@@ -4,10 +4,15 @@ import 'package:fluentui_system_icons/fluentui_system_icons.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_speed_dial/flutter_speed_dial.dart';
 import 'package:gdsc/colors.dart';
-import 'package:gdsc/home/blank_memo_page.dart';
+import 'package:gdsc/home/memo/blank_memo_page.dart';
+import 'package:gdsc/home/memo/dating_memo_page.dart';
+import 'package:gdsc/home/memo/domestic_memo_page.dart';
+import 'package:gdsc/home/memo/school_memo_page.dart';
 import 'package:gdsc/home/recording.dart';
 import 'package:gdsc/home/school_page.dart';
-import 'package:gdsc/provider/make_text_file_page_provider.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
+import 'package:gdsc/provider/in_folder_page_provider.dart';
+import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
@@ -92,6 +97,8 @@ Future<void> makeRecordDialog(context) async {
                   const SnackBar(content: Text('Name cannot be empty')),
                 );
               } else {
+                Provider.of<MakeFilePageProvider>(context, listen: false)
+                    .setFileName(controller.text.trim());
                 Navigator.of(context).pop(); // 대화 상자를 닫습니다.
                 Get.to(
                   RecordingScreen(),
@@ -161,17 +168,17 @@ Future<void> showTemplateDialog(context) async {
         TextButton(
             child: const Text('School Template'),
             onPressed: () {
-              showNameDialog('School Template', SchoolPage(), context);
+              showNameDialog('School Template', SchoolMemoPage(), context);
             }),
         TextButton(
             child: const Text('Domestic Template'),
             onPressed: () {
-              showNameDialog('Domestic Template', SchoolPage(), context);
+              showNameDialog('Domestic Template', DomesticMemoPage(), context);
             }),
         TextButton(
             child: const Text('Dating Template'),
             onPressed: () {
-              showNameDialog('Dating Template', SchoolPage(), context);
+              showNameDialog('Dating Template', DatingMemoPage(), context);
             }),
       ],
     ),
@@ -196,8 +203,9 @@ Future<void> showNameDialog(String template, Widget page, context) async {
           const SnackBar(content: Text('Name cannot be empty')),
         );
       } else {
-        Provider.of<MakeTextFilePageProvider>(context, listen: false)
-            .setPath(controller.text.trim());
+        Provider.of<MakeFilePageProvider>(context, listen: false)
+            .setFileName(controller.text.trim());
+        Navigator.of(context).pop();
         Navigator.of(context).pop();
         Get.to(page); // Go to the template page
       }
@@ -205,7 +213,7 @@ Future<void> showNameDialog(String template, Widget page, context) async {
   );
 }
 
-SpeedDial floatingInInFolderPage(context) {
+SpeedDial floatingInInFolderPage(BuildContext context) {
   return SpeedDial(
     icon: Icons.add,
     backgroundColor: firstBlue,
@@ -214,9 +222,22 @@ SpeedDial floatingInInFolderPage(context) {
     children: [
       buildSpeedDialChild('Voice Memo', FluentIcons.person_voice_16_regular,
           () {
+        String path = context
+            .watch<FolderPageProvider>()
+            .selectedFile
+            .path
+            .split('/')
+            .last;
+        Provider.of<MakeFilePageProvider>(context, listen: false).setPath(path);
         makeRecordDialog(context);
       }),
       buildSpeedDialChild('Text Memo', FluentIcons.document_16_regular, () {
+        String path = Provider.of<FolderPageProvider>(context, listen: false)
+            .selectedFile
+            .path
+            .split('/')
+            .last;
+        Provider.of<MakeFilePageProvider>(context, listen: false).setPath(path);
         showTemplateDialog(context);
       }),
     ],
