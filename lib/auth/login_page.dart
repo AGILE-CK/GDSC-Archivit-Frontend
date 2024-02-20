@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:gdsc/auth/signup_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/service/backend_api.dart';
-import 'package:gdsc/service/token_function.dart';
+import 'package:gdsc/service/preference_function.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

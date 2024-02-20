@@ -18,7 +18,7 @@ import 'package:gdsc/service/ai_api.dart';
 import 'package:gdsc/provider/in_folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:gdsc/service/get_default_directory.dart';
-import 'package:gdsc/service/token_function.dart';
+import 'package:gdsc/service/preference_function.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
