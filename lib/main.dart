@@ -14,14 +14,18 @@ import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/make_recording_page_provider.dart';
 import 'package:gdsc/provider/make_text_file_page_provider.dart';
+import 'package:gdsc/service/ai_api.dart';
 import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:gdsc/home/voice_text.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 바인딩 초기화 보장
+  // await initRecorder();
 
   await initservice();
   runApp(
@@ -46,6 +50,50 @@ const AndroidNotificationChannel notificationChannel =
   'coding is life foreground service',
   description: 'This cheannle is descrip....',
 );
+
+// FlutterSound 객체 생성
+FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+
+// 녹음 시작 함수
+Future<String> _startRecording() async {
+  Directory tempDir = await getApplicationDocumentsDirectory();
+  String path = '${tempDir.path}/flutter_sound-tmp.m4a';
+  await _recorder.openAudioSession();
+  _recorder.startRecorder(
+    toFile: path,
+    codec: Codec.aacMP4,
+  );
+  return path;
+}
+
+// 녹음 중지 및 파일 삭제 함수
+Future<bool> _stopRecording(String path) async {
+  await _recorder.stopRecorder();
+  await _recorder.closeAudioSession();
+
+  File file = File(path);
+
+  var s = await violent(file);
+
+  if (await file.exists()) {
+    file.delete();
+  }
+  return s;
+}
+
+Future<bool> _stopRecording2(String path) async {
+  await _recorder.stopRecorder();
+  await _recorder.closeAudioSession();
+
+  File file = File(path);
+
+  var s = await clam(file);
+
+  if (await file.exists()) {
+    file.delete();
+  }
+  return s;
+}
 
 Future<void> initservice() async {
   var service = FlutterBackgroundService();
@@ -82,6 +130,14 @@ Future<void> initservice() async {
   // service.startService();
 }
 
+Future initRecorder() async {
+  final status = await Permission.microphone.request();
+
+  if (status != PermissionStatus.granted) {
+    throw RecordingPermissionException("Microphone permission not granted");
+  }
+}
+
 @pragma("vm:entry-point")
 Future<void> onStart(ServiceInstance service) async {
   DartPluginRegistrant.ensureInitialized();
@@ -89,15 +145,6 @@ Future<void> onStart(ServiceInstance service) async {
       FlutterLocalNotificationsPlugin();
 
   FlutterSoundRecorder recorder = FlutterSoundRecorder();
-
-  var file_path = await getApplicationDocumentsDirectory();
-
-  await recorder.openRecorder(); // await 추가
-  await recorder.startRecorder(
-    // await 추가
-    toFile: file_path.path + "/test.mp4",
-    codec: Codec.aacMP4,
-  );
 
   service.on("setAsForeground").listen((event) {
     print("setAsForeground");
@@ -110,31 +157,53 @@ Future<void> onStart(ServiceInstance service) async {
   service.on("stopService").listen((event) async {
     print("stopService");
     await recorder.stopRecorder();
-    await recorder.closeRecorder();
+    await recorder.closeAudioSession();
     await service.stopSelf();
   });
-  //display notification as service
-  Timer.periodic(Duration(seconds: 2), (timer) {
-    flutterLocalPlugin.show(
-        90,
-        "Cool Service",
-        "Awsome ${DateTime.now()}",
-        NotificationDetails(
-            android: AndroidNotificationDetails(
-          "coding is life",
-          "coding is life service",
-          ongoing: true,
-        )));
-  });
+  var cnt = 0;
+  var isCheck = false;
+  var isCheck2 = false;
 
-  print("Background service ${DateTime.now()}");
+  //display notification as service
+  Timer.periodic(Duration(seconds: 10), (timer) async {
+    var path = await _startRecording();
+    if (cnt == 0) Future.delayed(Duration(seconds: 10), () => cnt = 1);
+
+    if (!isCheck) {
+      isCheck = await _stopRecording(path);
+    } else {
+      isCheck2 = await _stopRecording2(path);
+    }
+
+    if (isCheck && isCheck2) {
+      // if calm or default detected.
+      print("Calm or Default Situation");
+      await recorder.stopRecorder();
+      await recorder.closeAudioSession();
+      await service.stopSelf();
+    } else if (isCheck && !isCheck2) {
+      // if violent detected.
+      print("Violent Situation Detected");
+      var file_path = await getApplicationDocumentsDirectory();
+      var formatter = new DateFormat('MM-dd-hh:mm');
+      String formattedDate = formatter.format(DateTime.now());
+
+      await recorder.openAudioSession();
+      await recorder.startRecorder(
+        toFile: file_path.path + "/" + formattedDate + ".m4a",
+        codec: Codec.aacMP4,
+      );
+    } else {
+      print("Waiting for the right condition to start recording...");
+    }
+  });
+  print("Background service ${DateTime.now().second}");
 }
 
 @pragma("vm:entry-point")
 Future<bool> iosBackground(ServiceInstance service) async {
   WidgetsFlutterBinding.ensureInitialized();
   DartPluginRegistrant.ensureInitialized();
-
   return true;
 }
 

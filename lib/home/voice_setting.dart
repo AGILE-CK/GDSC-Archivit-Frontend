@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:provider/provider.dart';
 
 class VoiceSettingScreen extends StatefulWidget {
   @override
@@ -99,12 +101,7 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                         GestureDetector(
                           onTap: () async {
                             print("Start service");
-                            // await recorder.openRecorder(); // await 추가
-                            // await recorder.startRecorder(
-                            //   // await 추가
-                            //   toFile: file_path.path + "/test1234.mp4",
-                            //   codec: Codec.aacMP4,
-                            // );
+
                             FlutterBackgroundService().startService();
                           },
                           child: _buildCircle('START'),
@@ -115,6 +112,9 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                             FlutterBackgroundService().invoke(
                               "stopService",
                             );
+                            Provider.of<FolderPageProvider>(context,
+                                    listen: false)
+                                .listFilesAndTexts();
                           },
                           child: _buildCircle('STOP'),
                         ),

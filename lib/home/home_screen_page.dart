@@ -172,7 +172,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   children: files.map((file) {
                     String ext = path.extension(file.path);
 
-                    if (ext == '.mp4') {
+                    if (ext == '.m4a') {
                       return GestureDetector(
                         onLongPress: () {
                           showEditDialog(file);
@@ -195,7 +195,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             Text(
                               file.path.split('/').last,
                               style: const TextStyle(
-                                fontSize: 15.0,
+                                fontSize: 13.0,
                                 color: Colors.black,
                               ),
                             ),

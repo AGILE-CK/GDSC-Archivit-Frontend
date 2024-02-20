@@ -98,7 +98,7 @@ class _InFolderPageState extends State<InFolderPage>
         .where((element) => element.path.split('.').last == 'txt')
         .toList();
     List<FileSystemEntity> voices = files
-        .where((element) => element.path.split('.').last == 'mp4')
+        .where((element) => element.path.split('.').last == 'm4a')
         .toList();
 
     return Scaffold(
