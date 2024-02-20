@@ -1,7 +1,9 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
+import 'package:gdsc/service/get_default_directory.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -87,9 +89,10 @@ class _DomesticMemoPage extends State<DomesticMemoPage> {
   }
 
   Future<void> _saveTextFile(String path, context) async {
-    final Directory directory = await getApplicationDocumentsDirectory();
+    final Directory directory = await createUserDataDirectory();
 
     final File file = File('${directory.path}/$path.txt'); //provider todo
     await file.writeAsString(_textEditingController.text);
+    Provider.of<FolderPageProvider>(context, listen: false).listFilesAndTexts();
   }
 }

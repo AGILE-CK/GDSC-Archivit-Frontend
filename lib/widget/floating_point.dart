@@ -9,10 +9,10 @@ import 'package:gdsc/home/memo/dating_memo_page.dart';
 import 'package:gdsc/home/memo/domestic_memo_page.dart';
 import 'package:gdsc/home/memo/school_memo_page.dart';
 import 'package:gdsc/home/recording.dart';
-import 'package:gdsc/home/school_page.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/provider/in_folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
+import 'package:gdsc/service/get_default_directory.dart';
 import 'package:get/get.dart';
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:path_provider/path_provider.dart';
@@ -104,7 +104,7 @@ Future<void> makeRecordDialog(context) async {
                     .setFileName(controller.text.trim());
                 Navigator.of(context).pop(); // 대화 상자를 닫습니다.
                 Get.to(
-                  RecordingScreen(),
+                  () => RecordingScreen(),
                 );
               }
             },
@@ -138,7 +138,7 @@ Future<void> makeFolderDialog(context) async {
                   const SnackBar(content: Text('Name cannot be empty')),
                 );
               } else {
-                final directory = await getApplicationDocumentsDirectory();
+                final directory = await createUserDataDirectory();
                 final folderPath =
                     '${directory.path}/${controller.text.trim()}';
 
@@ -149,6 +149,8 @@ Future<void> makeFolderDialog(context) async {
                 }
 
                 Navigator.of(context).pop(); // 대화 상자를 닫습니다.
+                Provider.of<FolderPageProvider>(context, listen: false)
+                    .listFilesAndTexts();
               }
             },
           ),
@@ -225,8 +227,7 @@ SpeedDial floatingInInFolderPage(BuildContext context) {
     children: [
       buildSpeedDialChild('Voice Memo', FluentIcons.person_voice_16_regular,
           () {
-        String path = context
-            .watch<FolderPageProvider>()
+        String path = Provider.of<FolderPageProvider>(context, listen: false)
             .selectedFile
             .path
             .split('/')

@@ -56,3 +56,14 @@ Future<http.Response> ping() async {
     'Authorization': 'Bearer $token'
   });
 }
+
+Future<http.Response> uploadRecording(String filePath) async {
+  var url = Uri.parse(URL + RECORD_CREATE);
+  var token = await getToken();
+  token = jsonDecode(token)['token'];
+  var request = http.MultipartRequest('POST', url)
+    ..headers['Authorization'] = 'Bearer $token'
+    ..files.add(await http.MultipartFile.fromPath('file', filePath));
+  var streamedResponse = await request.send();
+  return http.Response.fromStream(streamedResponse);
+}

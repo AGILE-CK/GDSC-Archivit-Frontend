@@ -54,11 +54,11 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
           //   label: 'Idea',
           // ),
           BottomNavigationBarItem(
-            icon: Image(image: AssetImage('assets/icon/setting.jpg')),
+            icon: Icon(Icons.record_voice_over),
             activeIcon: Image(
                 image:
                     AssetImage('assets/icon/setting.jpg')), // active icon color
-            label: 'Setting',
+            label: 'Background Record',
           ),
           // BottomNavigationBarItem(
           //   icon: Image(image: AssetImage('assets/icon/profile.jpg')),

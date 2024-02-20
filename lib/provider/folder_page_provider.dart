@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:gdsc/service/get_default_directory.dart';
 import 'package:path_provider/path_provider.dart';
 
 class FolderPageProvider extends ChangeNotifier {
@@ -12,7 +13,7 @@ class FolderPageProvider extends ChangeNotifier {
 
   Future<void> listFilesAndTexts() async {
     // Get the app document directory path
-    final directory = await getApplicationDocumentsDirectory();
+    final directory = await createUserDataDirectory();
     _files = directory.listSync();
     notifyListeners();
   }

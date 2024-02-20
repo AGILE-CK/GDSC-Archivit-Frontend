@@ -13,12 +13,6 @@ const String VIOLENT = "violent-speech-detection/";
 const String CLAM = "clam-situation-detection/";
 const String transcribe = "transcribe/";
 
-// curl -X 'POST' \
-//   'https://final-apcfknrtba-du.a.run.app/violent-speech-detection/' \
-//   -H 'accept: application/json' \
-//   -H 'Content-Type: multipart/form-data' \
-//   -F 'file=@수지로296번길 2.m4a;type=audio/x-m4a'
-
 Future<bool> violent(File file) async {
   var url = Uri.parse(URL + VIOLENT);
 

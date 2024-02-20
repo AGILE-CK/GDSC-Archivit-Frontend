@@ -17,6 +17,7 @@ import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/service/ai_api.dart';
 import 'package:gdsc/provider/in_folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
+import 'package:gdsc/service/get_default_directory.dart';
 import 'package:gdsc/service/token_function.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -56,7 +57,7 @@ FlutterSoundRecorder _recorder = FlutterSoundRecorder();
 
 // 녹음 시작 함수
 Future<String> _startRecording() async {
-  Directory tempDir = await getApplicationDocumentsDirectory();
+  Directory tempDir = await createUserDataDirectory();
   String path = '${tempDir.path}/flutter_sound-tmp.m4a';
   await _recorder.openAudioSession();
   _recorder.startRecorder(
@@ -184,7 +185,7 @@ Future<void> onStart(ServiceInstance service) async {
     } else if (isCheck && !isCheck2) {
       // if violent detected.
       print("Violent Situation Detected");
-      var file_path = await getApplicationDocumentsDirectory();
+      var file_path = await createUserDataDirectory();
       var formatter = new DateFormat('MM-dd-hh:mm');
       String formattedDate = formatter.format(DateTime.now());
 

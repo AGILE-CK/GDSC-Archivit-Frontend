@@ -3,13 +3,17 @@
 import 'dart:async'; // 이 줄을 추가해주세요.
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
+import 'package:gdsc/provider/make_file_page_provider.dart';
+import 'package:gdsc/service/backend_api.dart';
+import 'package:gdsc/service/get_default_directory.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:provider/provider.dart';
 import '../service/token_function.dart';
 import 'dart:convert';
-
 
 class RecordingScreen extends StatefulWidget {
   @override
@@ -34,19 +38,19 @@ class _RecordingScreenState extends State<RecordingScreen> {
 
   Future<void> _initRecorder() async {
     try {
-      var status = await Permission.microphone.request();
-      if (status != PermissionStatus.granted) {
-        print("Microphone permission not granted");
-        return;
-      }
+      // var status = await Permission.microphone.request();
+      // if (status != PermissionStatus.granted) {
+      //   print("Microphone permission not granted");
+      //   return;
+      // }
       await _recorder.openAudioSession();
       setState(() => _isRecorderInitialized = true);
     } catch (e) {
       print('Failed to open audio session: $e');
     }
   }
-  
-  void togglePlay() async {
+
+  void togglePlay(String path) async {
     if (!_isRecorderInitialized) {
       print('Recorder not initialized');
       return;
@@ -54,10 +58,14 @@ class _RecordingScreenState extends State<RecordingScreen> {
 
     // Start recording
     if (!isRecording) {
-      Directory tempDir = await getTemporaryDirectory();
-      String filePath = '${tempDir.path}/${DateTime.now().millisecondsSinceEpoch}.aac';
+      Directory tempDir = await createUserDataDirectory();
+
+      String filePath = '${tempDir.path}/$path.m4a';
       try {
-        await _recorder.startRecorder(toFile: filePath);
+        await _recorder.startRecorder(
+          toFile: filePath,
+          codec: Codec.aacMP4,
+        );
         _recordFilePath = filePath;
         _startTimer();
         setState(() {
@@ -95,7 +103,6 @@ class _RecordingScreenState extends State<RecordingScreen> {
     }
   }
 
-
   void _cancelRecording() async {
     if (_recorder.isRecording || isPaused) {
       await _recorder.stopRecorder();
@@ -116,19 +123,16 @@ class _RecordingScreenState extends State<RecordingScreen> {
     }
   }
 
-
-
-  Future<void> _initRecorderSecond() async {
-    var status = await Permission.microphone.request();
-    if (status != PermissionStatus.granted) {
-      // Handle permission denial
-      print('Microphone permission not granted');
-      return;
-    }
-    await _recorder.openAudioSession();
-    setState(() => _isRecorderInitialized = true);
-  }
-
+  // Future<void> _initRecorderSecond() async {
+  //   var status = await Permission.microphone.request();
+  //   if (status != PermissionStatus.granted) {
+  //     // Handle permission denial
+  //     print('Microphone permission not granted');
+  //     return;
+  //   }
+  //   await _recorder.openAudioSession();
+  //   setState(() => _isRecorderInitialized = true);
+  // }
 
   @override
   void dispose() {
@@ -260,42 +264,47 @@ class _RecordingScreenState extends State<RecordingScreen> {
               ),
             ],
           ),
-            Positioned(
-              bottom: 0,
-              left: 0,
-              right: 0,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-
-                  Text(
-                    _printDuration(Duration(seconds: timerValue)),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30.0, // Make the timer number smaller
-                    ),
+          Positioned(
+            bottom: 0,
+            left: 0,
+            right: 0,
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                Text(
+                  _printDuration(Duration(seconds: timerValue)),
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 30.0, // Make the timer number smaller
                   ),
-                  SizedBox(height: 80.0),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      GestureDetector(
+                ),
+                SizedBox(height: 80.0),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Consumer<MakeFilePageProvider>(
+                        builder: (context, makeTextFilePageProvider, child) {
+                      return GestureDetector(
                         onTap: () {
-                            togglePlay();
+                          togglePlay(makeTextFilePageProvider.fullPath);
                         },
                         child: AnimatedContainer(
                           duration: Duration(milliseconds: 300),
                           curve: Curves.easeInOut,
                           padding: EdgeInsets.symmetric(
-                            vertical: 8.0, 
+                            vertical: 8.0,
                             horizontal: isRecording ? 32.0 : 16.0,
                           ),
                           decoration: BoxDecoration(
-                            color: isRecording ? Colors.deepPurple : Colors.purpleAccent,
+                            color: isRecording
+                                ? Colors.deepPurple
+                                : Colors.purpleAccent,
                             borderRadius: BorderRadius.circular(20.0),
                             boxShadow: [
                               BoxShadow(
-                                color: isRecording ? Colors.deepPurple[700]!.withOpacity(0.6) : Colors.purpleAccent.withOpacity(0.3),
+                                color: isRecording
+                                    ? Colors.deepPurple[700]!.withOpacity(0.6)
+                                    : Colors.purpleAccent.withOpacity(0.3),
                                 spreadRadius: isRecording ? 4 : 1,
                                 blurRadius: isRecording ? 10 : 2,
                                 offset: Offset(0, 3),
@@ -312,7 +321,11 @@ class _RecordingScreenState extends State<RecordingScreen> {
                               ),
                               SizedBox(width: 4.0),
                               Text(
-                                isPlaying ? 'Recording' : isPaused ? 'Paused' : 'Record',
+                                isPlaying
+                                    ? 'Recording'
+                                    : isPaused
+                                        ? 'Paused'
+                                        : 'Record',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 16.0,
@@ -322,13 +335,14 @@ class _RecordingScreenState extends State<RecordingScreen> {
                             ],
                           ),
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(height: 25.0),
-                ],
-              ),
+                      );
+                    }),
+                  ],
+                ),
+                SizedBox(height: 25.0),
+              ],
             ),
+          ),
         ],
       ),
     );
@@ -354,14 +368,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
     });
   }
 
-  void _stopTimer() {
-    _timer.cancel();
-    setState(() {
-      timerValue = 0;
-    });
-  }
-
- void _showSavePopup(BuildContext context) async {
+  void _showSavePopup(BuildContext context) async {
     // Check if recording is active and pause it before showing the dialog
     if (isRecording && !isPaused) {
       await _recorder.pauseRecorder();
@@ -385,6 +392,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop(); // Close the dialog
+
                 if (isPaused) {
                   // Optionally, resume recording or handle as needed
                 }
@@ -402,6 +410,7 @@ class _RecordingScreenState extends State<RecordingScreen> {
                 Navigator.of(context).pop(); // Close the dialog
                 // Proceed with save operation
                 await _saveRecording();
+                Get.back();
               },
               child: Text(
                 "Yes",
@@ -414,29 +423,32 @@ class _RecordingScreenState extends State<RecordingScreen> {
     );
   }
 
-    
-
   Future<void> _saveRecording() async {
     if (_recordFilePath == null) {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('No recording to save.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('No recording to save.')));
       return;
     }
 
     try {
       var response = await uploadRecording(_recordFilePath!);
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Recording uploaded successfully.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Recording uploaded successfully.')));
         // Assume recording is no longer needed and can be deleted
         final file = File(_recordFilePath!);
-        if (await file.exists()) {
-          await file.delete(); // Delete the recorded file if saved successfully
-        }
+
+        // if (await file.exists()) {
+        //   await file.delete(); // Delete the recorded file if saved successfully
+        // }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Failed to upload recording.')));
+        ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Failed to upload recording.')));
       }
     } catch (e) {
       print('Error saving recording: $e');
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Error saving recording.')));
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Error saving recording.')));
     } finally {
       // Resetting the recording state for a new recording
       await _recorder.stopRecorder(); // Ensure the recorder is stopped
@@ -450,17 +462,4 @@ class _RecordingScreenState extends State<RecordingScreen> {
       });
     }
   }
-
-
-
-  Future<http.Response> uploadRecording(String filePath) async {
-    var url = Uri.parse('https://agile-dev-dot-primeval-span-410215.du.r.appspot.com/record/create');
-    var token = await getToken();
-    token = jsonDecode(token)['token'];
-    var request = http.MultipartRequest('POST', url)
-      ..headers['Authorization'] = 'Bearer $token'
-      ..files.add(await http.MultipartFile.fromPath('file', filePath));
-    var streamedResponse = await request.send();
-    return http.Response.fromStream(streamedResponse);
-    }
-  }
+}
