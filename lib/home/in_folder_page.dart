@@ -8,6 +8,7 @@ import 'package:gdsc/provider/in_folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:path/path.dart' as path;
 
 import '../provider/folder_page_provider.dart';
 import '../widget/floating_point.dart';
@@ -79,7 +80,7 @@ class _InFolderPageState extends State<InFolderPage>
           final newPath =
               '${file.path.split('/').sublist(0, file.path.split('/').length - 1).join('/')}/${controller.text.trim()}';
 
-          file.renameSync(newPath);
+          file.renameSync(newPath + path.extension(file.path));
           Get.back(); // Close the dialog
 
           Provider.of<FolderPageProvider>(context, listen: false)

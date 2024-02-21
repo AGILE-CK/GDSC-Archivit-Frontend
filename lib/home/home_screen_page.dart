@@ -86,7 +86,7 @@ class _HomeScreenState extends State<HomeScreen> {
           final newPath =
               '${file.path.split('/').sublist(0, file.path.split('/').length - 1).join('/')}/${controller.text.trim()}';
 
-          file.renameSync(newPath);
+          file.renameSync(newPath + path.extension(file.path));
           Get.back(); // Close the dialog
 
           Provider.of<FolderPageProvider>(context, listen: false)
