@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
+import 'package:gdsc/service/backend_api.dart';
 import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
@@ -87,8 +88,10 @@ class _OpenFilePage extends State<OpenFilePage> {
 
   Future<void> _saveTextFile(String path, context) async {
     final File file = File('$path');
-    await file.writeAsString(_textEditingController.text);
     Provider.of<FolderPageProvider>(context, listen: false).listFilesAndTexts();
+
+    await file.writeAsString(_textEditingController.text);
+    var response = await uploadText(file.path);
     Get.back();
   }
 }

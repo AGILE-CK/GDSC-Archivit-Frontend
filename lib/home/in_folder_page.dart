@@ -6,6 +6,7 @@ import 'package:gdsc/home/memo/open_page.dart';
 import 'package:gdsc/home/voice_text.dart';
 import 'package:gdsc/provider/in_folder_page_provider.dart';
 import 'package:gdsc/provider/make_file_page_provider.dart';
+import 'package:gdsc/service/backend_api.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
 import 'package:path/path.dart' as path;
@@ -21,6 +22,7 @@ class InFolderPage extends StatefulWidget {
 class _InFolderPageState extends State<InFolderPage>
     with TickerProviderStateMixin {
   late TabController _tabController;
+  String _updatedName = '';
 
   @override
   void initState() {
@@ -39,17 +41,21 @@ class _InFolderPageState extends State<InFolderPage>
         children: <Widget>[
           TextButton(
             child: Text('Rename'),
-            onPressed: () {
+            onPressed: () async {
               // Rename the file
-              showRenameDialog(file);
+              await showRenameDialog(file);
+              await uploadText(_updatedName);
+              await deleteFile(file.path);
             },
           ),
           TextButton(
             child: Text('Delete'),
-            onPressed: () {
+            onPressed: () async {
               // Delete the file
-              file.delete();
               Get.back(); // Close the dialog
+              await deleteFile(file.path);
+
+              await file.delete();
 
               setState(() {});
               // Redraw the screen
@@ -79,8 +85,8 @@ class _InFolderPageState extends State<InFolderPage>
           // Rename the file
           final newPath =
               '${file.path.split('/').sublist(0, file.path.split('/').length - 1).join('/')}/${controller.text.trim()}';
-
-          file.renameSync(newPath + path.extension(file.path));
+          _updatedName = newPath + path.extension(file.path);
+          file.renameSync(_updatedName);
           Get.back(); // Close the dialog
 
           Provider.of<FolderPageProvider>(context, listen: false)

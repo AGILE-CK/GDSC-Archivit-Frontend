@@ -20,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String _updatedName = '';
   Future<void> showOnlyRenameDialog(FileSystemEntity file) async {
     return Get.defaultDialog(
       title: 'rename file',
@@ -44,17 +45,21 @@ class _HomeScreenState extends State<HomeScreen> {
         children: <Widget>[
           TextButton(
             child: Text('Rename'),
-            onPressed: () {
+            onPressed: () async {
               // Rename the file
-              showRenameDialog(file);
+              await showRenameDialog(file);
+              await uploadText(_updatedName);
+              await deleteFile(file.path);
             },
           ),
           TextButton(
             child: Text('Delete'),
-            onPressed: () {
+            onPressed: () async {
               // Delete the file
-              file.delete();
+
               Get.back(); // Close the dialog
+              await deleteFile(file.path);
+              await file.delete();
               Provider.of<FolderPageProvider>(context, listen: false)
                   .listFilesAndTexts();
               setState(() {});
@@ -85,10 +90,9 @@ class _HomeScreenState extends State<HomeScreen> {
           // Rename the file
           final newPath =
               '${file.path.split('/').sublist(0, file.path.split('/').length - 1).join('/')}/${controller.text.trim()}';
-
-          file.renameSync(newPath + path.extension(file.path));
+          _updatedName = newPath + path.extension(file.path);
+          file.renameSync(_updatedName);
           Get.back(); // Close the dialog
-
           Provider.of<FolderPageProvider>(context, listen: false)
               .listFilesAndTexts();
           setState(() {}); // Redraw the screen
