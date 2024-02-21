@@ -1,13 +1,41 @@
 # Archivit
 #### Project of 2024 google solution challenge
-![alt text](image-2.png)
----
+This is our Logo
+<img src="logo.png" width="200" height="200" alt="alt text">
 
+---
 ## MEMBERS
 | Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
 |---|---|---|---|
-| Lead / Design | Frontend / Backend | Frontend | AI |
+| Lead / Design | Frontend / Backend | Frontend | AI / Frontend |
 | KOR | KOR | KOR | CAM |
+---
+## How to Start
+
+#### Frontend
+You should install Flutter.
+(My Version: Flutter SDK: 3.19.0 , Dart: 3.3.0)
+
+Our Flutter project is only available for use in the iOS environment.
+So before, command 'flutter run'. Please, Launch the IOS Emulator or connect with IOS phone.
+
+```
+flutter run // and choose IOS Platform.
+```
+#### Backend
+You should install Go.(My Version: go1.21.5)
+
+Go to the main.go directory.
+
+
+```
+docker compose up -d
+go run main.go
+```
+
+#### AI
+<!-- Chinsan do -->
+
 ---
 ## Targeting of UN - SDGs
 #### Goal 3. Good Health & Well-Being
@@ -15,7 +43,7 @@
 ![alt text](image-1.png) ![alt text](image-3.png) ![alt text](image-4.png)
 
 #### About our solution 
-In our current society, various incidents of violence have emerged as a serious social issue. The Archivit app aims to help vulnerable individuals live a healthy life without worrying about tomorrow amid these incidents.
+In our current korea society, various incidents of violence have emerged as a serious social issue. The Archivit app aims to help vulnerable individuals live a healthy life without worrying about tomorrow amid these incidents.
 
 We provide users with an AI-powered recording feature to adopt evidence of violence when they are exposed to such situations. Even in situations where victims cannot manually record, AI recognizes the violent situation and automatically proceeds with recording, which can be immensely helpful for victims in legal proceedings.
 
@@ -35,11 +63,52 @@ ___
 #### Frontend 
 
 ###### 1. Tech Stack
-* Dart 3.1.5
-* Flutter 3.13.9
-* Get 4.6.5
-* Flutter_ScreenUtil 5.9.0
-* Dio 5.3.2
-* path 1.8.3
+* Flutter 
+* Getx
+* flutter_sound
+* flutter_background_service
+
+#### Backend
+###### 1. Tech Stack
+* Golang
+* Gin-Gonic
+* Gorm
+* Swagger
+* Mysql
+* GCP App Engine
+  
+#### AI
+----
 
 
+
+----
+## Trouble Shooting History
+<!-- - It would be very nice to write history of what you are thinking and hard to implement during this project. (Gdsc tell this part is important.) -->
+#### Frontend 
+
+
+
+#### Backend
+
+
+
+#### AI
+
+
+#### Planning
+
+----
+## Improvement things
+
+#### Frontend 
+
+
+
+#### Backend
+
+
+#### AI
+
+
+#### Planning
