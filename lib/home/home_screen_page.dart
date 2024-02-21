@@ -20,6 +20,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Future<void> showOnlyRenameDialog(FileSystemEntity file) async {
+    return Get.defaultDialog(
+      title: 'rename file',
+      content: Column(
+        children: <Widget>[
+          TextButton(
+            child: Text('Rename'),
+            onPressed: () {
+              // Rename the file
+              showRenameDialog(file);
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
   Future<void> showEditDialog(FileSystemEntity file) async {
     return Get.defaultDialog(
       title: 'Edit file',
@@ -261,7 +278,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     } else {
                       return GestureDetector(
                         onLongPress: () {
-                          showEditDialog(file);
+                          showOnlyRenameDialog(file);
                         },
                         onTap: () {
                           // Open the file
