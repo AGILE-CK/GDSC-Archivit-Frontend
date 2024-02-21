@@ -8,9 +8,7 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:gdsc/auth/login_page.dart';
-import 'package:gdsc/home/memo/blank_memo_page.dart';
 import 'package:gdsc/home/home_screen_page.dart';
-import 'package:gdsc/home/voice_setting.dart';
 import 'package:gdsc/provider/bottom_bar_provider.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 
@@ -21,10 +19,8 @@ import 'package:gdsc/service/get_default_directory.dart';
 import 'package:gdsc/service/preference_function.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:gdsc/home/voice_text.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized(); // 바인딩 초기화 보장
@@ -188,6 +184,7 @@ Future<void> onStart(ServiceInstance service) async {
     await recorder.closeAudioSession();
     await service.stopSelf();
   });
+  var saved_path = '';
 
   //display notification as service
   while (true) {
@@ -212,8 +209,10 @@ Future<void> onStart(ServiceInstance service) async {
       // so we just record during 20 seconds
       await recorder.stopRecorder();
       await recorder.closeAudioSession();
-      await service.stopSelf();
+
+      // await service.stopSelf();
       // showStopDialog();
+
       isCheck = false;
       isCheck2 = false;
     } else if (isCheck) {
@@ -223,14 +222,14 @@ Future<void> onStart(ServiceInstance service) async {
       String formattedDate = formatter.format(DateTime.now());
 
       await recorder.openAudioSession();
+      saved_path = file_path.path + "/" + formattedDate + ".m4a";
       await recorder.startRecorder(
-        toFile: file_path.path + "/" + formattedDate + ".m4a",
+        toFile: saved_path,
         codec: Codec.aacMP4,
       );
 
       isCheck2 = true;
-      Future.delayed(Duration(seconds: 20));
-      // showStartRecording();
+      Future.delayed(Duration(seconds: 120));
     } else {
       print("Waiting for the right condition to start recording...");
     }

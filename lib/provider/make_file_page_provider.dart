@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class MakeFilePageProvider extends ChangeNotifier {
-  String _path = ''; // todo
+  String _path = '';
   String _fileName = '';
 
   String get path => _path;

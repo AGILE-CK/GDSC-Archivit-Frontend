@@ -212,7 +212,7 @@ Future<void> showNameDialog(String template, Widget page, context) async {
             .setFileName(controller.text.trim());
         Navigator.of(context).pop();
         Navigator.of(context).pop();
-        Get.to(page); // Go to the template page
+        Get.to(() => page); // Go to the template page
       }
     },
   );

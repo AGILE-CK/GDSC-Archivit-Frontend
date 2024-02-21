@@ -427,8 +427,6 @@ class _RecordingScreenState extends State<RecordingScreen> {
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Recording uploaded successfully.')));
-        // Assume recording is no longer needed and can be deleted
-        final file = File(_recordFilePath!);
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
             SnackBar(content: Text('Failed to upload recording.')));
