@@ -4,12 +4,12 @@
 ---
 
 ## MEMBERS
-| A | B | C | D |
+| Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
 |---|---|---|---|
-| 셀 | 셀 | 셀 | 셀 |
-| 셀 | 셀 | 셀 | 셀 |
+| Lead / Design | Frontend / Backend | Frontend | AI |
+| KOR | KOR | KOR | CAM |
 ---
-### Targeting of UN - SDGs
+## Targeting of UN - SDGs
 #### Goal 3. Good Health & Well-Being
 
 ![alt text](image-1.png) ![alt text](image-3.png) ![alt text](image-4.png)
@@ -27,18 +27,19 @@ Finally, when used as evidence, we have added a feature that utilizes AI to conv
 
 ___
 
+## App Overview
+---
+
+## About Implement
+
+#### Frontend 
+
+###### 1. Tech Stack
+* Dart 3.1.5
+* Flutter 3.13.9
+* Get 4.6.5
+* Flutter_ScreenUtil 5.9.0
+* Dio 5.3.2
+* path 1.8.3
 
 
-
-
-####About Our Solution
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
