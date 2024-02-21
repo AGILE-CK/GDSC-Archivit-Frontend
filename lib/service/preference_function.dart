@@ -19,11 +19,25 @@ Future<void> saveTrascriptJSON(
   await prefs.setString('$path', json.encode(jsonMap));
 }
 
-Future<Map<String, dynamic>> getTranscriptJSON(String path) async {
+Future<String?> getTranscriptJSON(String path) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
-  String? jsonMap = prefs.getString('$path');
-  if (jsonMap == null) {
-    return {};
-  }
-  return json.decode(jsonMap);
+  return prefs.getString('$path');
+  // if (jsonMap == null) {
+  //   return {};
+  // }
+  // return json.decode(jsonMap);
+}
+
+Future<void> saveSummaryJSON(String jsonMap, String path) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  await prefs.setString('${path}_summary', jsonMap);
+}
+
+Future<String?> getSummaryJSON(String path) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  return prefs.getString('${path}_summary');
+  // if (jsonMap == null) {
+  //   return {};
+  // }
+  // return json.decode(jsonMap);
 }

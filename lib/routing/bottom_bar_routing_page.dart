@@ -20,7 +20,7 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
 
   void _onItemTapped(int index) {
     Provider.of<BottomBarProvider>(context, listen: false).currentIndex = index;
-    Get.to(() => navBarPages[index]);
+    Get.offAll(() => navBarPages[index]);
   }
 
   @override
@@ -55,9 +55,7 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
           // ),
           BottomNavigationBarItem(
             icon: Icon(Icons.record_voice_over),
-            activeIcon: Image(
-                image:
-                    AssetImage('assets/icon/setting.jpg')), // active icon color
+            activeIcon: Icon(Icons.record_voice_over), // active icon color
             label: 'Background Record',
           ),
           // BottomNavigationBarItem(
@@ -70,6 +68,8 @@ class _BottomBarRoutingPageState extends State<BottomBarRoutingPage> {
         ],
         currentIndex: selectedIndex,
         unselectedItemColor: Colors.black,
+        selectedItemColor: Colors.black, // 추가
+
         backgroundColor: Colors.white,
         onTap: _onItemTapped,
       ),

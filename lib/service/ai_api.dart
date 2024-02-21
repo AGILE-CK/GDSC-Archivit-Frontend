@@ -67,7 +67,7 @@ Future<bool> clam(File file) async {
   }
 }
 
-Future<void> transcribeFile(File file) async {
+Future<Map<String, dynamic>> transcribeFile(File file) async {
   var url = Uri.parse(URL + transcribe);
 
   var request = http.MultipartRequest('POST', url);
@@ -81,10 +81,45 @@ Future<void> transcribeFile(File file) async {
   print(responseBody.body);
 
   Map<String, dynamic> decodedJson = jsonDecode(responseBody.body);
-
-  if (response.statusCode == 200) {
-    print(decodedJson['transcription']);
-  } else {
-    print("Error");
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load transcript');
   }
+  return decodedJson;
+}
+
+// curl -X 'POST' \
+//   'https://final-apcfknrtba-du.a.run.app/summarize/' \
+//   -H 'accept: application/json' \
+//   -H 'Content-Type: application/json' \
+//   -d '{
+//   "prompt_parts": [
+//     "SPEAKER_00: 안녕 준하야 오늘 어떻게 지냈어?\nSPEAKER_01: 어.. 잘 지냈어. 너는?\nSPEAKER_00: 나? 나도 잘 지냈어. 오늘 뭐 했는데?\nSPEAKER_01: 오늘 아무것도 안 했어\nSPEAKER_00: 아 그래? 밖에 나가서 사람 좀 만나고 그래\n"
+//   ]
+// }
+// '
+
+Future<String> summarizeJson(Map<String, dynamic> transcript) async {
+  String requestBody = '';
+
+  for (var item in transcript['transcriptions']) {
+    String speaker = item[0].subString(10);
+    String text = item[1];
+    requestBody += speaker + ": " + text + "\n";
+  }
+  var url = Uri.parse(URL + SUMMARIZE);
+
+  var response = await http.post(
+    url,
+    headers: <String, String>{
+      'accept': 'application/json',
+      'Content-Type': 'application/json'
+    },
+    body: jsonEncode(<String, dynamic>{
+      'prompt_parts': [requestBody]
+    }),
+  );
+  if (response.statusCode != 200) {
+    throw Exception('Failed to load summary');
+  }
+  return jsonDecode(response.body)['generated_text'];
 }

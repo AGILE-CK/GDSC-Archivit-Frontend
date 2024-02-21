@@ -4,8 +4,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_recorder.dart';
+import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/service/get_default_directory.dart';
+import 'package:get/get.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
@@ -46,6 +48,16 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
+                      GestureDetector(
+                        onTap: () {
+                          Get.to(() => HomeScreen());
+                        },
+                        child: Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: 30.0,
+                        ),
+                      ),
                       Text(
                         'Archivit',
                         style: TextStyle(

@@ -1,0 +1,5 @@
+flutter_icons:
+  ios: true
+  image_path_ios: "assets/logo/archivit.png"
+  android: "launcher_icon"
+  image_path_android: "assets/logo/archivit.png"

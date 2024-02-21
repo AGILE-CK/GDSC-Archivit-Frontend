@@ -58,6 +58,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
+  flutter_launcher_icons: ^0.13.1
 
 
 # For information on the generic Dart part of this file, see the
@@ -73,6 +74,7 @@ flutter:
   assets:
     - assets/icon/
     - assets/icon/floating/
+    - assets/logo/
 
     # 애플리케이션에 자산을 추가하려면 다음과 같이 자산 섹션을 추가하십시오.
     # assets:

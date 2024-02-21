@@ -173,7 +173,7 @@ Future<void> onStart(ServiceInstance service) async {
   var isCheck2 = false;
 
   //display notification as service
-  Timer.periodic(Duration(seconds: 10), (timer) async {
+  Timer.periodic(Duration(seconds: 20), (timer) async {
     var path = await _startRecording();
     if (cnt == 0) Future.delayed(Duration(seconds: 10), () => cnt = 1);
 
@@ -189,6 +189,8 @@ Future<void> onStart(ServiceInstance service) async {
       await recorder.stopRecorder();
       await recorder.closeAudioSession();
       await service.stopSelf();
+      isCheck = false;
+      isCheck2 = false;
     } else if (isCheck && !isCheck2) {
       // if violent detected.
       print("Violent Situation Detected");

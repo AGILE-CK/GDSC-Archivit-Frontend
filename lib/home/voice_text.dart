@@ -1,8 +1,11 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_sound/flutter_sound.dart';
 import 'package:flutter_sound/public/flutter_sound_player.dart';
-
-enum PlaybackSpeed { normal, doubleSpeed, tripleSpeed }
+import 'package:gdsc/service/ai_api.dart';
+import 'package:gdsc/service/preference_function.dart';
 
 class Conversation {
   final String speaker;
@@ -21,36 +24,80 @@ class VoiceTextScreen extends StatefulWidget {
 
 class _VoiceTextScreenState extends State<VoiceTextScreen> {
   bool isPlaying = false;
-  PlaybackSpeed playbackSpeed = PlaybackSpeed.normal;
   String filePath = "";
+  Map<String, dynamic> transcript = {};
+  String summary = "";
 
   // 대화를 나타내는 Conversation 객체의 리스트
-  List<Conversation> conversation = [
-    Conversation("A", "Hi there!"),
-    Conversation("B", "Hello!"),
-    Conversation("A", "How are you?"),
-    Conversation("C", "I'm good, thanks for asking."),
-    Conversation("A", "That's great to hear!"),
-    Conversation("B", "Yeah, how about you?"),
-    Conversation("C", "I'm doing well too."),
-    Conversation("A", "That's good."),
-    Conversation("B", "What are you doing this weekend?"),
-    Conversation("C", "I'm planning to go hiking with some friends."),
-    Conversation("A", "Sounds like fun!"),
-  ];
+  List<Conversation> conversation = [];
   FlutterSoundPlayer _player = FlutterSoundPlayer();
+  List<Color> colors = [
+    Colors.red,
+    Colors.blue,
+    Colors.green,
+    Colors.orange,
+    Colors.yellow,
+    Colors.indigo,
+    Colors.purple,
+    Colors.pink,
+    Colors.teal,
+    Colors.brown,
+    Colors.cyan,
+    Colors.lime,
+    Colors.amber,
+    Colors.deepOrange,
+  ];
+
+  bool isTranscriptExist = false;
+  bool isSummaryExist = false;
+  bool isLoading = false;
 
   @override
   void initState() {
     super.initState();
     filePath = widget.filePath;
+    Future.delayed(Duration(milliseconds: 1), () async {
+      var jsonMap = await getTranscriptJSON(filePath);
+
+      if (jsonMap != null) {
+        setState(() {
+          isTranscriptExist = true;
+          transcript = json.decode(jsonMap);
+          _loadTranscript();
+        });
+
+        var summaryJsonMap = await getSummaryJSON(filePath);
+        if (summaryJsonMap != null) {
+          setState(() {
+            isSummaryExist = true;
+            summary = summaryJsonMap;
+          });
+        }
+      }
+    });
     _player.openAudioSession();
   }
 
   @override
   void dispose() {
     _player.closeAudioSession();
+    conversation.clear();
+    transcript.clear();
+    isTranscriptExist = false;
+    isSummaryExist = false;
     super.dispose();
+  }
+
+  void _loadTranscript() {
+    for (var item in transcript['transcriptions']) {
+      int speakerNum =
+          int.parse(item[0].substring(8)); // Get the number after 'SPEAKER_'
+      String speaker = String.fromCharCode(
+          65 + speakerNum); // Convert the number to an alphabet letter
+      String message = item[1];
+
+      conversation.add(Conversation(speaker, message));
+    }
   }
 
   Future<void> _play() async {
@@ -99,7 +146,12 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                   ),
                   SizedBox(height: 5.0),
                   Text(
-                    'May 13, 2021',
+                    File(filePath)
+                        .statSync()
+                        .modified
+                        .toLocal()
+                        .toString()
+                        .split('.')[0],
                     style: TextStyle(
                       color: Colors.grey,
                       fontSize: 15.0,
@@ -112,7 +164,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                         MainAxisAlignment.spaceBetween, // 링크와 공유 아이콘을 오른쪽으로 정렬
                     children: [
                       Text(
-                        'ClassRoom',
+                        'Voice to Text',
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 26.0,
@@ -157,35 +209,79 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
               ),
             ),
             SizedBox(height: 10.0),
-            Container(
-              margin: EdgeInsets.symmetric(horizontal: 16.0),
-              padding: EdgeInsets.all(10.0),
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.lightBlueAccent),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    '🤖',
-                    style: TextStyle(
-                      color: Colors.grey,
-                      fontSize: 10.0,
-                      fontWeight: FontWeight.bold,
+            if (isLoading)
+              Center(
+                child: CircularProgressIndicator(),
+              )
+            else if (!isTranscriptExist && !isSummaryExist)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    transcribeFile(File(filePath)).then((result) {
+                      transcript = result;
+                      _loadTranscript();
+                      setState(() {
+                        isTranscriptExist = true;
+                        isLoading = false;
+                      });
+                    });
+                  },
+                  child: Text('Try Transcript'),
+                ),
+              )
+            else if (isTranscriptExist && !isSummaryExist)
+              Center(
+                child: ElevatedButton(
+                  onPressed: () {
+                    setState(() {
+                      isLoading = true;
+                    });
+                    summarizeJson(transcript).then((result) {
+                      summary = result;
+
+                      saveSummaryJSON(summary, filePath);
+                      setState(() {
+                        isSummaryExist = true;
+                        isLoading = false;
+                      });
+                    });
+                  },
+                  child: Text('Try Summary'),
+                ),
+              )
+            else
+              Container(
+                margin: EdgeInsets.symmetric(horizontal: 16.0),
+                padding: EdgeInsets.all(10.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.lightBlueAccent),
+                  borderRadius: BorderRadius.circular(10.0),
+                ),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      '🤖',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  SizedBox(height: 5.0),
-                  Text(
-                    'This is a long AI summary text. It will dynamically adjust the size of the box based on the length of the text. This ensures that the box expands vertically as the text gets longer.',
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 12.0,
+                    SizedBox(height: 5.0),
+                    Text(
+                      summary,
+                      style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 12.0,
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
             SizedBox(height: 10.0),
             SingleChildScrollView(
               child: Container(
@@ -203,34 +299,32 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                             height: 20.0,
                             margin: EdgeInsets.only(top: 6.0, right: 8.0),
                             decoration: BoxDecoration(
-                              color: conv.speaker == "A"
-                                  ? Colors.red
-                                  : conv.speaker == "B"
-                                      ? Colors.blue
-                                      : Colors.green,
+                              color: colors[conv.speaker.codeUnitAt(0) - 65],
                               shape: BoxShape.circle,
                             ),
                           ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                conv.speaker,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.bold,
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  conv.speaker,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18.0,
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
-                              ),
-                              SizedBox(height: 4.0),
-                              Text(
-                                conv.message,
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 18.0,
+                                SizedBox(height: 4.0),
+                                Text(
+                                  conv.message,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 18.0,
+                                  ),
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ],
                       ),
@@ -249,33 +343,17 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
               IconButton(
-                icon: Text(playbackSpeed == PlaybackSpeed.normal
-                    ? '1x'
-                    : playbackSpeed == PlaybackSpeed.doubleSpeed
-                        ? '2x'
-                        : '3x'),
-                onPressed: () {
-                  setState(() {
-                    if (playbackSpeed == PlaybackSpeed.normal) {
-                      playbackSpeed = PlaybackSpeed.doubleSpeed;
-                    } else if (playbackSpeed == PlaybackSpeed.doubleSpeed) {
-                      playbackSpeed = PlaybackSpeed.tripleSpeed;
-                    } else {
-                      playbackSpeed = PlaybackSpeed.normal;
-                    }
-                  });
-                },
-              ),
-              IconButton(
                 icon: Icon(Icons.fast_rewind),
                 onPressed: () {
                   // 10초 이전으로 감기 버튼 눌렀을 때 동작
+                  _rewind();
                 },
               ),
               isPlaying
                   ? IconButton(
                       icon: Icon(Icons.stop),
                       onPressed: () {
+                        _pause();
                         setState(() {
                           isPlaying = false;
                         });
@@ -284,6 +362,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                   : IconButton(
                       icon: Icon(Icons.pause),
                       onPressed: () {
+                        _play();
                         setState(() {
                           isPlaying = true;
                         });
@@ -292,13 +371,8 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
               IconButton(
                 icon: Icon(Icons.fast_forward),
                 onPressed: () {
-                  // 10초 이후로 감기 버튼 눌렀을 때 동작
-                },
-              ),
-              IconButton(
-                icon: Icon(Icons.message),
-                onPressed: () {
-                  // 말풍선 아이콘 버튼 눌렀을 때 동작
+                  // 10초 이후로 넘기기 버튼 눌렀을 때 동작
+                  _forward();
                 },
               ),
             ],
