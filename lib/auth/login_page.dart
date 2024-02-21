@@ -106,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
             ),
             SizedBox(height: 16.0),
             GestureDetector(
-              onTap: () => Get.to(SignUpPage()),
+              onTap: () => Get.to(() => SignUpPage()),
               child: Text(
                 'Sign Up',
                 style: TextStyle(
