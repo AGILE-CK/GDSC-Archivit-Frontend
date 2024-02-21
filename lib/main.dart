@@ -54,6 +54,7 @@ const AndroidNotificationChannel notificationChannel =
 
 // FlutterSound 객체 생성
 FlutterSoundRecorder _recorder = FlutterSoundRecorder();
+FlutterSoundRecorder _recorder2 = FlutterSoundRecorder();
 
 // 녹음 시작 함수
 Future<String> _startRecording() async {
@@ -66,6 +67,17 @@ Future<String> _startRecording() async {
   );
   return path;
 }
+
+// Future<String> _startRecording2() async {
+//   Directory tempDir = await createUserDataDirectory();
+//   String path = '${tempDir.path}/flutter_sound-tmp2.mp4';
+//   await _recorder2.openAudioSession();
+//   _recorder2.startRecorder(
+//     toFile: path,
+//     codec: Codec.aacMP4,
+//   );
+//   return path;
+// }
 
 // 녹음 중지 및 파일 삭제 함수
 Future<bool> _stopRecording(String path) async {
@@ -82,19 +94,19 @@ Future<bool> _stopRecording(String path) async {
   return s;
 }
 
-Future<bool> _stopRecording2(String path) async {
-  await _recorder.stopRecorder();
-  await _recorder.closeAudioSession();
+// Future<bool> _stopRecording2(String path) async {
+//   await _recorder2.stopRecorder();
+//   await _recorder2.closeAudioSession();
 
-  File file = File(path);
+//   File file = File(path);
 
-  var s = await clam(file);
+//   var s = await clam(file);
 
-  if (await file.exists()) {
-    file.delete();
-  }
-  return s;
-}
+//   if (await file.exists()) {
+//     file.delete();
+//   }
+//   return s;
+// }
 
 Future<void> initservice() async {
   var service = FlutterBackgroundService();
@@ -162,37 +174,49 @@ Future<void> onStart(ServiceInstance service) async {
     print("setAsBackground");
   });
 
+  var cnt = 0;
+  var isCheck = false;
+  var isCheck2 = false;
   service.on("stopService").listen((event) async {
     print("stopService");
+    Directory tempDir = await createUserDataDirectory();
+    String path = '${tempDir.path}/flutter_sound-tmp.mp4';
+    _stopRecording(path);
+    isCheck = false;
+    isCheck2 = false;
     await recorder.stopRecorder();
     await recorder.closeAudioSession();
     await service.stopSelf();
   });
-  var cnt = 0;
-  var isCheck = false;
-  var isCheck2 = false;
 
   //display notification as service
-  Timer.periodic(Duration(seconds: 20), (timer) async {
-    var path = await _startRecording();
-    if (cnt == 0) Future.delayed(Duration(seconds: 10), () => cnt = 1);
+  while (true) {
+    var path = '';
+    if (!isCheck) {
+      path = await _startRecording();
+    }
+    // if (!isCheck2 && isCheck) {
+    //   path = await _startRecording2();
+    // }
+    if (!isCheck) await Future.delayed(Duration(seconds: 10));
 
     if (!isCheck) {
       isCheck = await _stopRecording(path);
-    } else {
-      isCheck2 = await _stopRecording2(path);
     }
+    // else {
+    //   isCheck2 = await _stopRecording2(path);
+    // }
 
     if (isCheck && isCheck2) {
-      // if calm or default detected.
-      print("Calm or Default Situation");
+      // print("Calm or Default Situation"); we can not open recorder concurrently
+      // so we just record during 20 seconds
       await recorder.stopRecorder();
       await recorder.closeAudioSession();
       await service.stopSelf();
+      // showStopDialog();
       isCheck = false;
       isCheck2 = false;
-    } else if (isCheck && !isCheck2) {
-      // if violent detected.
+    } else if (isCheck) {
       print("Violent Situation Detected");
       var file_path = await createUserDataDirectory();
       var formatter = new DateFormat('MM-dd-hh:mm');
@@ -203,11 +227,26 @@ Future<void> onStart(ServiceInstance service) async {
         toFile: file_path.path + "/" + formattedDate + ".m4a",
         codec: Codec.aacMP4,
       );
+
+      isCheck2 = true;
+      Future.delayed(Duration(seconds: 20));
+      // showStartRecording();
     } else {
       print("Waiting for the right condition to start recording...");
     }
-  });
-  print("Background service ${DateTime.now().second}");
+  }
+}
+
+Future<void> showStartRecording() async {
+  return Get.defaultDialog(
+    title: 'Detect the violent sound. Start the recording now.',
+  );
+}
+
+Future<void> showStopDialog() async {
+  return Get.defaultDialog(
+    title: 'Detect the calm sound. Stop the recording now. and save the file.',
+  );
 }
 
 @pragma("vm:entry-point")

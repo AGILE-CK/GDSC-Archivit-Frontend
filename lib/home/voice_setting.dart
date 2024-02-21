@@ -8,7 +8,6 @@ import 'package:gdsc/home/home_screen_page.dart';
 import 'package:gdsc/provider/folder_page_provider.dart';
 import 'package:gdsc/service/get_default_directory.dart';
 import 'package:get/get.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
 
 class VoiceSettingScreen extends StatefulWidget {
@@ -115,7 +114,7 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                         GestureDetector(
                           onTap: () async {
                             print("Start service");
-
+                            showStartDialog();
                             FlutterBackgroundService().startService();
                           },
                           child: _buildCircle('START'),
@@ -141,6 +140,19 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Future<void> showStartDialog() async {
+    return Get.defaultDialog(
+      title:
+          'Start the Background Recording, now your app checking the violent sound',
+    );
+  }
+
+  Future<void> showStopDialog() async {
+    return Get.defaultDialog(
+      title: 'Stop the Background Recording',
     );
   }
 

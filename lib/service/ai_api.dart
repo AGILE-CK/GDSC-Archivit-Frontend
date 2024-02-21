@@ -6,6 +6,7 @@ import 'package:http/http.dart' as http;
 import 'package:http_parser/http_parser.dart';
 
 const String URL = "https://final-apcfknrtba-du.a.run.app/";
+
 // const String URL = "http://127.0.0.1:8000/";
 
 const String SUMMARIZE = "summarize/";
@@ -30,7 +31,7 @@ Future<bool> violent(File file) async {
   Map<String, dynamic> decodedJson = jsonDecode(responseBody.body);
 
   if (response.statusCode == 200) {
-    if (decodedJson['violance_status'] == "Violent Situation Detected") {
+    if (decodedJson['violence_status'] == "Violent Situation Detected") {
       return true;
     } else {
       return false;
@@ -77,10 +78,10 @@ Future<Map<String, dynamic>> transcribeFile(File file) async {
 
   var response = await request.send();
 
-  var responseBody = await http.Response.fromStream(response);
-  print(responseBody.body);
+  var responseBody = await response.stream.bytesToString();
+  print(responseBody);
 
-  Map<String, dynamic> decodedJson = jsonDecode(responseBody.body);
+  Map<String, dynamic> decodedJson = jsonDecode(responseBody);
   if (response.statusCode != 200) {
     throw Exception('Failed to load transcript');
   }
@@ -102,7 +103,7 @@ Future<String> summarizeJson(Map<String, dynamic> transcript) async {
   String requestBody = '';
 
   for (var item in transcript['transcriptions']) {
-    String speaker = item[0].subString(10);
+    String speaker = item[0];
     String text = item[1];
     requestBody += speaker + ": " + text + "\n";
   }
@@ -112,14 +113,19 @@ Future<String> summarizeJson(Map<String, dynamic> transcript) async {
     url,
     headers: <String, String>{
       'accept': 'application/json',
-      'Content-Type': 'application/json'
+      'Content-Type': 'application/json; charset=utf-8' // 여기를 수정했습니다.
     },
     body: jsonEncode(<String, dynamic>{
       'prompt_parts': [requestBody]
     }),
   );
+
+  print(response.body);
+
+  String body = utf8.decode(response.bodyBytes);
+
   if (response.statusCode != 200) {
     throw Exception('Failed to load summary');
   }
-  return jsonDecode(response.body)['generated_text'];
+  return jsonDecode(body)['generated_text'];
 }

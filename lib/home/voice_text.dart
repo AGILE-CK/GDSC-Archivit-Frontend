@@ -113,7 +113,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
   }
 
   Future<void> _rewind() async {
-    await _player.seekToPlayer(Duration(seconds: 5));
+    await _player.seekToPlayer(Duration(seconds: -5));
   }
 
   @override
@@ -171,19 +171,6 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                           fontWeight: FontWeight.w900,
                         ),
                       ),
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.link,
-                            color: Colors.black,
-                          ),
-                          SizedBox(width: 16),
-                          Icon(
-                            Icons.share,
-                            color: Colors.black,
-                          ),
-                        ],
-                      ),
                     ],
                   ),
                   SizedBox(height: 20.0),
@@ -224,6 +211,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                       transcript = result;
                       _loadTranscript();
                       setState(() {
+                        saveTrascriptJSON(result, filePath);
                         isTranscriptExist = true;
                         isLoading = false;
                       });
@@ -351,7 +339,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
               ),
               isPlaying
                   ? IconButton(
-                      icon: Icon(Icons.stop),
+                      icon: Icon(Icons.pause),
                       onPressed: () {
                         _pause();
                         setState(() {
@@ -360,7 +348,7 @@ class _VoiceTextScreenState extends State<VoiceTextScreen> {
                       },
                     )
                   : IconButton(
-                      icon: Icon(Icons.pause),
+                      icon: Icon(Icons.play_arrow),
                       onPressed: () {
                         _play();
                         setState(() {
