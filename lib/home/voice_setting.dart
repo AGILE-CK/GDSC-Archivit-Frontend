@@ -58,14 +58,18 @@ class _VoiceSettingScreenState extends State<VoiceSettingScreen> {
                           size: 30.0,
                         ),
                       ),
-                      Text(
-                        'Archivit',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 40.0,
-                          fontWeight: FontWeight.w900,
-                          height: 1.2,
-                          letterSpacing: 1.0,
+                      Container(
+                        padding: const EdgeInsets.only(top: 20.0),
+                        margin: const EdgeInsets.only(right: 95.0, top: 25.0),
+                        child: const Text(
+                          'Archivit',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 50.0,
+                            fontWeight: FontWeight.w900,
+                            height: 1.2,
+                            letterSpacing: 1.0,
+                          ),
                         ),
                       ),
                     ],
