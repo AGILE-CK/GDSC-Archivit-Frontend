@@ -30,7 +30,7 @@ ___
 ## App Overview
 
 
-todo
+#todo - we have to explain why app name is archivit
 
 
 
@@ -68,14 +68,14 @@ go run main.go
 
 ## About Implement
 #### Tech Stack
-###### Frontend 
+###### - Frontend 
 * Flutter 
 * Getx
 * flutter_sound
 * flutter_background_service 
 * etc
 
-###### Backend
+###### - Backend
 * Golang
 * Gin-Gonic
 * Gorm
@@ -84,7 +84,7 @@ go run main.go
 * GCP App Engine
 
 
-###### AI
+###### - AI
 
 
 #### Project Architecture
@@ -100,6 +100,9 @@ go run main.go
 ----
 ## Improvement things
 
+#### Planning
+
+
 #### Frontend 
 
 #### Backend
@@ -108,7 +111,6 @@ go run main.go
 #### AI
 
 
-#### Planning
 
 ----
 ## FeedBack
@@ -117,6 +119,7 @@ go run main.go
 
 
 
+#### Planning
 
 
 #### Frontend 
@@ -127,6 +130,5 @@ go run main.go
 #### AI
 
 
-#### Planning
 
 
