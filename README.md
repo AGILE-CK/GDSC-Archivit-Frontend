@@ -1,7 +1,7 @@
 # Archivit
 #### Project of 2024 google solution challenge
-![alt text](image-2.png)
----
+<img src="image-2.png" alt="alt text" width="400" height="400">
+
 
 ## MEMBERS
 | Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
@@ -28,12 +28,21 @@ Finally, when used as evidence, we have added a feature that utilizes AI to conv
 ___
 
 ## App Overview
+<img src="image-5.png" alt="alt text" width="300" height="500">
+
+<img src="image-6.png" alt="alt text" width="300" height="500">
+
+<img src="image-7.png" alt="alt text" width="300" height="500">
+
+<img src="image-8.png" alt="alt text" width="300" height="500">
+
+<img src="image-9.png" alt="alt text" width="300" height="500">
+
 ---
 
 ## About Implement
-
 #### Frontend 
-
+---
 ###### 1. Tech Stack
 * Dart 3.1.5
 * Flutter 3.13.9
@@ -42,4 +51,52 @@ ___
 * Dio 5.3.2
 * path 1.8.3
 
+##### 2. Architecture
+* app
+    * common
+       * util
+        * values
+            * styles
+    * data
+        * enums
+        * errors
+        * models
+        * providers
+    * login
+        * model
+        * view
+        * controller
+    * home
+        * model
+        * view
+        * controller
+    * memo
+        * model
+        * view
+        * controller
+    * record
+        * model
+        * view
+        * controller
+    * register
+        * model
+        * view
+        * controller
+    * provider
+        * model
+        * view
+        * controller
+    
+---
 
+#### Backend
+---
+~~
+___
+
+#### Archivit AI
+---
+~~
+__
+
+#Thank you
