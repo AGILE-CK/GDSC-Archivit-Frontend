@@ -1,8 +1,8 @@
 # Archivit
 #### Project of 2024 google solution challenge
-<img src="logo.png" width="200" height="200" alt="alt text">
+<img src="image-2.png" alt="alt text" width="400" height="400">
 
----
+
 ## MEMBERS
 | Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
 |---|---|---|---|
@@ -28,13 +28,18 @@ Finally, when used as evidence, we have added a feature that utilizes AI to conv
 ___
 
 ## App Overview
+<img src="image-5.png" alt="alt text" width="300" height="500">
 
+<img src="image-6.png" alt="alt text" width="300" height="500">
 
-#todo - we have to explain why app name is archivit
+<img src="image-7.png" alt="alt text" width="300" height="500">
 
+<img src="image-8.png" alt="alt text" width="300" height="500">
 
+<img src="image-9.png" alt="alt text" width="300" height="500">
 
 ---
+
 
 ## How to Start
 
@@ -131,4 +136,52 @@ go run main.go
 
 
 
+##### 2. Architecture
+* app
+    * common
+       * util
+        * values
+            * styles
+    * data
+        * enums
+        * errors
+        * models
+        * providers
+    * login
+        * model
+        * view
+        * controller
+    * home
+        * model
+        * view
+        * controller
+    * memo
+        * model
+        * view
+        * controller
+    * record
+        * model
+        * view
+        * controller
+    * register
+        * model
+        * view
+        * controller
+    * provider
+        * model
+        * view
+        * controller
+    
+---
 
+#### Backend
+---
+~~
+___
+
+#### Archivit AI
+---
+~~
+__
+
+#Thank you
