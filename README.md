@@ -65,7 +65,39 @@ go run main.go
 ```
 
 #### AI
+To run this project, you need Python 3.7 or newer. It's recommended to use a virtual environment.
 
+1. Install google-generativeai package:
+
+```
+pip install -q -U google-generativeai
+```
+
+2. Install dependencies:
+```
+pip install -r requirements.txt
+```
+Requirements
+- FastAPI
+- PyTorch
+- Transformers
+- Pydub
+- Soynlp
+- Pyannote.audio
+- Google Cloud Generative AI services (for summarization)
+- Librosa
+
+Ensure you have the necessary API keys and tokens for services such as Hugging Face and Google Cloud.
+
+3. Start the server with:
+```
+uvicorn main:app --reload
+```
+Endpoints
+POST /violent-speech-detection/: Detects violent content in the speech.
+POST /calm-situation-detection/: Identifies calm situations from audio.
+POST /transcribe/: Performs speaker diarization and transcription.
+POST /summarize/: Summarizes the provided text.
 
 ---
 
@@ -90,7 +122,10 @@ go run main.go
 
 
 ###### - AI
-
+* FastAPI: For building efficient, asynchronous REST APIs that serve our machine learning models.
+* PyTorch & Transformers: For loading and serving state-of-the-art NLP and audio processing models.
+* Librosa & Pydub: For audio file manipulation and format conversion.
+* TensorFlow & Hugging Face Pipelines: For emotion detection and speaker diarization.
 
 #### Project Architecture
 
@@ -114,7 +149,13 @@ go run main.go
 
 
 #### AI
+* Enhance Model Accuracy: Continually retrain models with diverse, updated datasets to improve recognition accuracy and reduce bias.
 
+* Increase Processing Speed: Use model optimization techniques like quantization and parallel processing to ensure real-time performance even under high load.
+
+* Strengthen Privacy and Security: Implement voice anonymization and secure data handling to protect user privacy and data integrity.
+
+* Expand Features and Languages: Develop context-aware models and broaden language support to cater to a global user base.
 
 
 ----
@@ -133,5 +174,6 @@ go run main.go
 
 
 #### AI
+During the development of our project for the 2024 Google Solution Challenge, choosing the right AI model and integrating it with our app were our main challenges. Balancing accuracy with efficiency and scalability required careful consideration, as we aimed for a solution that offered real-world reliability without compromising performance. The integration process demanded a meticulous approach to ensure seamless communication between our AI API and the app, prioritizing user experience. This journey taught us the importance of adaptability and the value of community feedback in navigating technical challenges, reinforcing our commitment to continuous improvement and innovation in our quest to make a meaningful impact.
 
 #Thank you
