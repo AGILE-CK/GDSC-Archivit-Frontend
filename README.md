@@ -1,8 +1,7 @@
 # Archivit
 #### Project of 2024 google solution challenge
-<img src="image-2.png" alt="alt text" width="400" height="400">
 
-
+![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-22 002.jpeg>)
 ## MEMBERS
 | Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
 |---|---|---|---|
@@ -10,10 +9,9 @@
 | KOR | KOR | KOR | CAM |
 ---
 ## Targeting of UN - SDGs
-#### Goal 3. Good Health & Well-Being
 
-![alt text](image-1.png) ![alt text](image-3.png) ![alt text](image-4.png)
-
+<!-- ![alt text](image-1.png) ![alt text](image-3.png) ![alt text](image-4.png) -->
+![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-22 003.jpeg>)
 #### About our solution 
 In our current korea society, various incidents of violence have emerged as a serious social issue. The Archivit app aims to help vulnerable individuals live a healthy life without worrying about tomorrow amid these incidents.
 
@@ -28,15 +26,21 @@ Finally, when used as evidence, we have added a feature that utilizes AI to conv
 ___
 
 ## App Overview
-<img src="image-5.png" alt="alt text" width="300" height="500">
+<!-- <img src="image-5.png" alt="alt text" width="390" height="844">
 
-<img src="image-6.png" alt="alt text" width="300" height="500">
+<img src="image-6.png" alt="alt text" width="390" height="844">
 
-<img src="image-7.png" alt="alt text" width="300" height="500">
+<img src="image-7.png" alt="alt text" width="390" height="844">
 
-<img src="image-8.png" alt="alt text" width="300" height="500">
+<img src="image-8.png" alt="alt text" width="390" height="844">
 
-<img src="image-9.png" alt="alt text" width="300" height="500">
+<img src="image-9.png" alt="alt text" width="390" height="844"> -->
+
+![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 005.jpeg>)
+
+
+![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 006.jpeg>)
+
 
 ---
 
@@ -47,7 +51,9 @@ ___
 You should install Flutter.
 (My Version: Flutter SDK: 3.19.0 , Dart: 3.3.0)
 
+<b>
 Our Flutter project is only available for use in the iOS environment.
+</b>
 So before, command 'flutter run'. Please, Launch the IOS Emulator or connect with IOS phone.
 
 ```
@@ -128,7 +134,7 @@ POST /summarize/: Summarizes the provided text.
 * TensorFlow & Hugging Face Pipelines: For emotion detection and speaker diarization.
 
 #### Project Architecture
-
+![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 004.jpeg>)
 
 
 #### Server URL 
@@ -145,8 +151,13 @@ POST /summarize/: Summarizes the provided text.
 
 #### Frontend 
 
-#### Backend
+* Currently, this project only supports iOS. In the case of Android, there is a lack of functionality for background services. It would be great if this could be further supplemented.
 
+
+#### Backend
+* Firebase Replacement: I'm currently using the Go language. However, most of the current backend APIs can be replaced with Firebase. If I had more time, I would like to replace it.
+* GATEWAY API: Currently, JWT security has not been properly applied to AI. Through the GATEWAY API, token verification can be performed. I want to implement this feature.
+* GRPC: Currently, in violent situations, we are recording every 10 seconds and getting verification from AI. If we use GRPC, more real-time verification will be possible.
 
 #### AI
 * Enhance Model Accuracy: Continually retrain models with diverse, updated datasets to improve recognition accuracy and reduce bias.
@@ -163,15 +174,14 @@ POST /summarize/: Summarizes the provided text.
 <!-- - It would be very nice to write history of what you are thinking and hard to implement during this project. (Gdsc tell this part is important.) -->
 <!-- If the project had been carried out in this way upon completion, it would have been even better. -->
 
-
-
 #### Planning
 
 
 #### Frontend 
+ Flutter did not support multiple recordings. If I had realized this fact sooner and thought of an alternative(Like GRPC), I could have achieved much better results. And I felt that communication within the team is important.
 
 #### Backend
-
+During the last GDSC Solution Challenge project, I tried using a framework called Gin-Gonic in Golang out of personal interest, without considering the plan. However, in terms of planning, our project's backend was very simple, and most of it could have been resolved at the Firebase level. I realized that it is also important to consider how to implement considering the planning. I also regret not being able to finish applying both the GATEWAY API and GRPC.
 
 #### AI
 During the development of our project for the 2024 Google Solution Challenge, choosing the right AI model and integrating it with our app were our main challenges. Balancing accuracy with efficiency and scalability required careful consideration, as we aimed for a solution that offered real-world reliability without compromising performance. The integration process demanded a meticulous approach to ensure seamless communication between our AI API and the app, prioritizing user experience. This journey taught us the importance of adaptability and the value of community feedback in navigating technical challenges, reinforcing our commitment to continuous improvement and innovation in our quest to make a meaningful impact.
