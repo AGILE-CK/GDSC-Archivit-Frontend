@@ -1,7 +1,8 @@
 # Archivit
 #### Project of 2024 google solution challenge
 
-![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-22 002.jpeg>)
+![alt text](https://github.com/AGILE-CK/.github/raw/main/images/KakaoTalk_Photo_2024-02-23-22-07-22%20002.jpeg)
+
 ## MEMBERS
 | Ko EunJin | Lee Sunggu  | Lim ChaeHyeong | Lao ChingSan |
 |---|---|---|---|
@@ -11,7 +12,7 @@
 ## Targeting of UN - SDGs
 
 <!-- ![alt text](image-1.png) ![alt text](image-3.png) ![alt text](image-4.png) -->
-![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-22 003.jpeg>)
+![alt text](https://github.com/AGILE-CK/.github/raw/main/images/KakaoTalk_Photo_2024-02-23-22-07-22%20003.jpeg)
 #### About our solution 
 In our current korea society, various incidents of violence have emerged as a serious social issue. The Archivit app aims to help vulnerable individuals live a healthy life without worrying about tomorrow amid these incidents.
 
@@ -36,10 +37,11 @@ ___
 
 <img src="image-9.png" alt="alt text" width="390" height="844"> -->
 
-![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 005.jpeg>)
+![alt text](https://github.com/AGILE-CK/.github/raw/main/images/KakaoTalk_Photo_2024-02-23-22-07-23%20005.jpeg)
 
 
-![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 006.jpeg>)
+![alt text](https://github.com/AGILE-CK/.github/raw/main/images/KakaoTalk_Photo_2024-02-23-22-07-23%20006.jpeg)
+
 
 
 ---
@@ -134,7 +136,7 @@ POST /summarize/: Summarizes the provided text.
 * TensorFlow & Hugging Face Pipelines: For emotion detection and speaker diarization.
 
 #### Project Architecture
-![alt text](<readme_asset/KakaoTalk_Photo_2024-02-23-22-07-23 004.jpeg>)
+![alt text](https://github.com/AGILE-CK/.github/raw/main/images/KakaoTalk_Photo_2024-02-23-22-07-23%20004.jpeg)
 
 
 #### Server URL 
@@ -147,8 +149,10 @@ POST /summarize/: Summarizes the provided text.
 ## Improvement things
 
 #### Planning
+The methods for victims to receive remedies are very diverse and hard to find. Even if you succeed in finding it, the procedure is complex. We wanted to solve this by guiding the process through a chatbot and allowing us to create a remedy application that fits the templates of each institution through the evidence we have collected and AI. However, during this Solution Challenge period, we did not have much time and could not fully implement it.
 
 
+* [Source](https://docs.google.com/spreadsheets/d/1hcungJAGTACJApmnxmV_1gB_2RpvLb0A/edit?usp=sharing&ouid=103564838690673927306&rtpof=true&sd=true)
 #### Frontend 
 
 * Currently, this project only supports iOS. In the case of Android, there is a lack of functionality for background services. It would be great if this could be further supplemented.
@@ -171,12 +175,6 @@ POST /summarize/: Summarizes the provided text.
 
 ----
 ## FeedBack
-<!-- - It would be very nice to write history of what you are thinking and hard to implement during this project. (Gdsc tell this part is important.) -->
-<!-- If the project had been carried out in this way upon completion, it would have been even better. -->
-
-#### Planning
-
-
 #### Frontend 
  Flutter did not support multiple recordings. If I had realized this fact sooner and thought of an alternative(Like GRPC), I could have achieved much better results. And I felt that communication within the team is important.
 
